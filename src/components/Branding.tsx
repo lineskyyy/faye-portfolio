@@ -26,6 +26,44 @@ const projects: GalleryProject[] = [
     link: "#",
     github: "#",
   },
+  {
+    id: 2,
+    title: "Publicis: Lucky Me",
+    category: "Digital Illustration",
+    description:
+      "A collection of digital paintings exploring themes of nature and abstraction.",
+    fullDescription:
+      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+    images: [
+      "/projects/branding/p9.jpg",
+      "/projects/branding/p10.jpg",
+      "/projects/branding/p11.jpg",
+    ],
+    tags: ["Illustration", "Digital Art", "Concept Art"],
+    year: "2023",
+    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    link: "#",
+    github: "#",
+  },
+  {
+    id: 3,
+    title: "Publicis: Skelan",
+    category: "Digital Illustration",
+    description:
+      "A collection of digital paintings exploring themes of nature and abstraction.",
+    fullDescription:
+      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+    images: [
+      "/projects/branding/p12.jpg",
+      "/projects/branding/p13.jpg",
+      "/projects/branding/p14.jpg",
+    ],
+    tags: ["Illustration", "Digital Art", "Concept Art"],
+    year: "2023",
+    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    link: "#",
+    github: "#",
+  },
 ];
 
 export default function Branding() {

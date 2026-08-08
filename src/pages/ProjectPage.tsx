@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import FloatingElements from "../components/FloatingElements";
 import { ArrowLeft, Palette, Presentation, Briefcase, Layout } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import DigitalIllustration from "../components/DigitalIllustration";
 import Presentations from "../components/Presentations";
 import Branding from "../components/Branding";
@@ -23,12 +23,28 @@ export default function ProjectPage() {
   const [scrollY, setScrollY] = useState(0);
   const [activeTab, setActiveTab] = useState<TabKey>("illustrations");
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Set the initial active tab based on the `tab` query param if present and valid
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as TabKey | null;
+    const validTab = TABS.some((t) => t.key === tabParam);
+    if (tabParam && validTab) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
+  // Helper to switch tabs and reflect the selection in the URL
+  const handleTabChange = (key: TabKey) => {
+    setActiveTab(key);
+    setSearchParams({ tab: key }, { replace: false });
+  };
 
   // Helper function to render component based on activeTab
   const renderTabContent = () => {
@@ -75,7 +91,7 @@ export default function ProjectPage() {
             {TABS.map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => handleTabChange(tab.key)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-full font-semibold border-2 smooth-transition transition-all duration-300 hover:scale-105 ${
                   activeTab === tab.key
                     ? "bg-sred text-primary-secondary border-sred shadow-[0_0_20px_rgba(254,73,123,0.4)]"

@@ -12,6 +12,7 @@ export default function Projects() {
       description: "Single sentence description here.",
       image: "/abstract-digital-art-painting.jpg",
       tags: ["Illustration", "Digital Art", "Concept Art"],
+      tab: "illustrations",
     },
     {
       id: 2,
@@ -20,6 +21,7 @@ export default function Projects() {
       description: "Animated sequences and motion graphics for brand storytelling.",
       image: "/motion-graphics-animation-design.jpg",
       tags: ["Animation", "Motion Graphics", "Branding"],
+      tab: "presentations",
     },
     {
       id: 3,
@@ -28,6 +30,7 @@ export default function Projects() {
       description: "An immersive web experience combining design and interactive elements.",
       image: "/interactive-web-design-interface.jpg",
       tags: ["Web Design", "Interactive", "UX/UI"],
+      tab: "branding",
     },
     {
       id: 4,
@@ -36,6 +39,7 @@ export default function Projects() {
       description: "Character modeling and design for digital media projects.",
       image: "/3d-character-design-model.jpg",
       tags: ["3D Art", "Character Design", "Modeling"],
+      tab: "graphic-design",
     },
   ]
 
@@ -56,7 +60,7 @@ export default function Projects() {
           {projects.map((project, index) => (
             // Card with enhanced card-hover utility and scroll animation
             <Link
-              to={`/work#project-${project.id}`}
+              to={`/work?tab=${project.tab}`}
               key={project.id}
               className={`group rounded-xl overflow-hidden bg-secondary/10 border border-secondary/30 card-hover ${
                 isVisible ? "fade-up" : "opacity-0"

@@ -2,44 +2,7 @@ import Gallery, { type GalleryProject } from "./Gallery";
 
 // Digital Illustration project compilation data
 const projects: GalleryProject[] = [
-  {
-    id: 1,
-    title: "Publicis: Lucky Me",
-    category: "Digital Illustration",
-    description:
-      "A collection of digital paintings exploring themes of nature and abstraction.",
-    fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
-    images: [
-      "/projects/graphicd/p1.jpg",
-      "/projects/graphicd/p2.jpg",
-      "/projects/graphicd/p3.jpg",
-    ],
-    tags: ["Illustration", "Digital Art", "Concept Art"],
-    year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
-    link: "#",
-    github: "#",
-  },
-  {
-    id: 2,
-    title: "Publicis: Skelan",
-    category: "Digital Illustration",
-    description:
-      "A collection of digital paintings exploring themes of nature and abstraction.",
-    fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
-    images: [
-      "/projects/graphicd/p4.jpg",
-      "/projects/graphicd/p5.jpg",
-      "/projects/graphicd/p6.jpg",
-    ],
-    tags: ["Illustration", "Digital Art", "Concept Art"],
-    year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
-    link: "#",
-    github: "#",
-  },
+  
   {
     id: 3,
     title: "Mock ads",
