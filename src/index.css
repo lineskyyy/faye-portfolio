@@ -1,0 +1,165 @@
+/* 🔑 FIX: Import the Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@import "tailwindcss";
+
+/*
+  TAILWIND THEME COLORS:
+  - Background: #10002b
+  - Primary: #ffba08 (Yellow/Orange)
+  - Accent/Foreground: #f9dbbd (Lightest contrast)
+  - Secondary/Muted: #c6abe8 (Light Purple)
+*/
+@theme inline {
+  --font-sans: "Inter", "Inter Fallback"; /* This is already set correctly */
+  --color-background: #1e5247;
+  /* --color-background: #ffffff; */
+  --color-foreground: #fff4e7;
+  --color-primary: #ffba08;
+  --color-primary-foreground: #10002b;
+  --color-secondary: #c6abe8;
+  --color-secondary-foreground: #10002b;
+  --color-accent: #f9dbbd;
+  --color-accent-foreground: #10002b;
+  --color-muted-foreground: #000000;
+  --color-border: #c6abe8;
+  --radius: 0.75rem;
+  --color-pred: #cb2957;
+  --color-sred: #dd3162;
+  --color-tred: #fe497b;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply bg-background scroll-smooth;
+    /* The font is automatically applied to all elements via the Tailwind default sans stack,
+       which now points to Inter. */
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0) translateX(0);
+    }
+    50% {
+      transform: translateY(-20px) translateX(10px);
+    }
+    100% {
+      transform: translateY(0) translateX(0);
+    }
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-up {
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .fade-up-delay-1 {
+    animation-delay: 0.1s;
+  }
+
+  .fade-up-delay-2 {
+    animation-delay: 0.2s;
+  }
+
+  .fade-up-delay-3 {
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  display: flex;
+  width: max-content;
+  animation: scroll 25s linear infinite;
+}
+
+/* Optional: Pause the animation on hover so users can click/look closely */
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* --- Gallery Modal Animations --- */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes imageZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes imageZoomOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.gallery-modal-enter {
+  animation: modalFadeIn 0.25s ease-out forwards;
+}
+
+.gallery-modal-exit {
+  animation: modalFadeOut 0.2s ease-in forwards;
+}
+
+.gallery-image-enter {
+  animation: imageZoomIn 0.25s ease-in-out;
+}
+
+.gallery-image-exit {
+  animation: imageZoomOut 0.15s ease-in-out forwards;
+}
