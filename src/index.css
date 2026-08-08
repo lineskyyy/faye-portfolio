@@ -15,9 +15,9 @@
   --color-background: #1e5247;
   /* --color-background: #ffffff; */
   --color-foreground: #fff4e7;
-  --color-primary: #ffba08;
+  --color-primary: #fe497b;
   --color-primary-foreground: #10002b;
-  --color-secondary: #c6abe8;
+  --color-secondary: #fff4e7;
   --color-secondary-foreground: #10002b;
   --color-accent: #f9dbbd;
   --color-accent-foreground: #10002b;
@@ -162,4 +162,21 @@
 
 .gallery-image-exit {
   animation: imageZoomOut 0.15s ease-in-out forwards;
+}
+
+/* --- Simple Loading Spinner --- */
+@keyframes smoothSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.smooth-spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  border: 3px solid rgba(255, 186, 8, 0.2);
+  border-top-color: #ffba08;
+  animation: smoothSpin 0.7s linear infinite;
 }

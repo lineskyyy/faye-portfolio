@@ -78,8 +78,8 @@ export default function ProjectPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-full font-semibold border-2 smooth-transition transition-all duration-300 hover:scale-105 ${
                   activeTab === tab.key
-                    ? "bg-primary text-primary-foreground border-primary shadow-[0_0_20px_rgba(255,186,8,0.4)]"
-                    : "bg-secondary/10 text-secondary border-secondary/30 hover:bg-primary/20 hover:text-primary"
+                    ? "bg-sred text-primary-secondary border-sred shadow-[0_0_20px_rgba(254,73,123,0.4)]"
+                    : "bg-secondary/10 text-secondary border-secondary/30 hover:bg-tred/20 hover:text-tred"
                 }`}
               >
                 {tab.icon}

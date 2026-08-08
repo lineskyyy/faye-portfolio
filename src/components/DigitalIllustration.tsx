@@ -64,9 +64,9 @@ export default function DigitalIllustration() {
         <section key={project.id} className="max-w-6xl mx-auto px-6">
           <div className="mb-12">
             {/* Category Tag - Prominent */}
-            <span className="text-sm font-semibold text-accent uppercase tracking-widest border border-primary/50 px-3 py-1 rounded-full mb-3 inline-block">
+            {/* <span className="text-sm font-semibold text-accent uppercase tracking-widest border border-primary/50 px-3 py-1 rounded-full mb-3 inline-block">
               {project.category}
-            </span>
+            </span> */}
             {/* Title */}
             <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
               {project.title}

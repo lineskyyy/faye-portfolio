@@ -1,15 +1,12 @@
-# Fix Gallery.tsx Errors
+# Faye Portfolio - Presentations Gallery Implementation
 
-## Errors Identified
-1. **TS2724**: `Compress` is not exported from `lucide-react` v0.546.0 → use `Minimize` instead
-2. **TS2307**: `framer-motion` module not installed (only used here) → remove dependency
-3. **TS7006**: `_` and `info` params in `onDragEnd` have implicit `any` type
+## Steps
+- [x] Review existing components (Gallery, Presentations, DigitalIllustration, ProjectPage)
+- [x] Confirm plan with user
+- [x] Enhance `Gallery.tsx` to render actual PDF page-by-page (fit to screen) when a `pdfUrl` is present; change button text to "View PDF"
+- [x] Update `Presentations.tsx` to use `<Gallery>` with folder images as carousel thumbnails and fix pdf paths
+- [x] Add dedicated PDF loading state (hides carousel while the real PDF renders, fixes cross-deck bleed)
+- [x] Simplify the loading spinner (smaller, lighter) to reduce lag
+- [x] Add percentage progress indicator below the rendering spinner
+- [x] Verify build passes with `npm run build`
 
-## Plan
-- [x] Create TODO.md
-- [x] Replace `framer-motion` import with CSS-based animations
-- [x] Replace `motion.div`/`AnimatePresence`/`motion.img` with plain elements + CSS transitions
-- [x] Replace `Compress` icon with `Minimize`
-- [x] Replace framer-motion drag with native pointer-events swipe handler
-- [x] Add CSS keyframes to index.css for modal & image transitions
-- [x] Verify with `npx tsc -b` ✅ Passed (TSC_RESULT=0)

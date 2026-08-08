@@ -3,9 +3,9 @@
 export default function Branding() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-16 text-center">
-      <span className="text-sm font-semibold text-accent uppercase tracking-widest border border-primary/50 px-3 py-1 rounded-full mb-3 inline-block">
+      {/* <span className="text-sm font-semibold text-accent uppercase tracking-widest border border-primary/50 px-3 py-1 rounded-full mb-3 inline-block">
         Branding
-      </span>
+      </span> */}
       <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
         Coming Soon
       </h2>
