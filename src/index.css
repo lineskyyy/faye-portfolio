@@ -82,8 +82,33 @@
     animation-delay: 0.2s;
   }
 
-  .fade-up-delay-3 {
+.fade-up-delay-3 {
     animation-delay: 0.3s;
+  }
+
+  /* Card float-forward on hover */
+  .card-float {
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+    will-change: transform;
+  }
+
+  .card-float:hover {
+    border-color: #dd3162;
+    transform: translateY(-20px) scale(1.05);
+    box-shadow:  0 20px 40px rgba(240, 80, 126, 0.4);
+    /* 0 20px 40px rgba(0, 0, 0, 0.35) */
+    z-index: 10;
+  }
+
+  /* Sliding image swap on hover */
+  .slide-image {
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .group:hover .slide-image,
+  .group:focus-within .slide-image {
+    transform: translateX(0);
   }
 }
 
