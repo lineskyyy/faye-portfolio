@@ -1,7 +1,10 @@
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent as ReactMouseEvent } from "react";
+
+
 import { Link } from "react-router-dom";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import { useScrollRevealProgress } from "../hooks/useScrollRevealProgress";
 
 type Project = {
   id: number;
@@ -17,7 +20,18 @@ type Project = {
 type CardState = "idle" | "opening" | "open" | "closing";
 
 export default function Projects() {
-  const { ref, isVisible } = useScrollAnimation();
+    const { ref, isVisible } = useScrollAnimation();
+  const { progress, reduceMotion } = useScrollRevealProgress("work");
+
+  const projectsRevealStyle: CSSProperties | undefined = reduceMotion
+    ? undefined
+    : {
+        opacity: 0.78 + progress * 0.22,
+        transform: `translate3d(0, ${(1 - progress) * 60}px, 0) scale(${0.965 + progress * 0.035})`,
+        transformOrigin: "center top",
+        willChange: "opacity, transform",
+      };
+
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [activeRect, setActiveRect] = useState<DOMRect | null>(null);
   const [cardState, setCardState] = useState<CardState>("idle");
@@ -115,9 +129,10 @@ export default function Projects() {
   }, [activeProject, cardState]);
 
   return (
-    <section ref={ref} id="work" className="px-6 py-20 md:px-8">
-      <div className="mx-auto max-w-5xl">
-        <div className={`mb-10 ${isVisible ? "fade-up" : "opacity-0"}`}>
+    <section ref={ref} id="work" className="px-6 pb-15 md:px-8">
+            <div className="mx-auto max-w-5xl" style={projectsRevealStyle}>
+
+        <div className={`mb-10 ${reduceMotion ? "opacity-100" : isVisible ? "fade-up" : "opacity-0"}`}>
           <h2 className="mb-4 text-4xl font-bold md:text-5xl">
             Featured <span className="text-tred">Work</span>
           </h2>

@@ -63,7 +63,7 @@ export default function ProjectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="min-h-screen bg-beige text-foreground overflow-hidden">
       <FloatingElements scrollY={scrollY} />
       <Navigation />
 

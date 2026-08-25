@@ -102,8 +102,8 @@ export default function DigitalIllustration() {
                 /* Infinite Smooth Marquee with Edge Fades & Hover Pause */
                 <div className="rrelative w-full overflow-hidden py-2">
                   {/* Left & Right Gradient Mask Overlays */}
-                  <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-background to-transparent z-10" />
-                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-background to-transparent z-10" />
+                  <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-beige to-transparent z-10" />
+                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-beige to-transparent z-10" />
 
                   <div className="flex gap-5 animate-scroll hover:[animation-play-state:paused] py-2">
                     {[...project.images, ...project.images].map((img, i) => {

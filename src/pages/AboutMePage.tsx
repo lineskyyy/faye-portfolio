@@ -112,8 +112,8 @@ export default function AboutMePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      <FloatingElements scrollY={scrollY} />
+    <div className="min-h-screen bg-beige text-foreground overflow-hidden">
+      <FloatingElements />
       <Navigation />
 
       <main className="pt-24 pb-20">
@@ -258,7 +258,7 @@ export default function AboutMePage() {
                     }}
                   >
                     {/* Timeline Dot with Primary color highlight */}
-                    <div className="absolute -left-8 top-1.5 p-1 bg-background border-4 border-primary rounded-full">
+                    <div className="absolute -left-8 top-1.5 p-1 bg-beige border-4 border-primary rounded-full">
                       <Briefcase size={16} className="text-primary" />
                     </div>
                     {/* Experience card with card-hover */}
@@ -307,7 +307,7 @@ export default function AboutMePage() {
                     }}
                   >
                     {/* Timeline Dot with Primary color highlight */}
-                    <div className="absolute -left-8 top-1.5 p-1 bg-background border-4 border-primary rounded-full">
+                    <div className="absolute -left-8 top-1.5 p-1 bg-beige border-4 border-primary rounded-full">
                       <GraduationCap size={16} className="text-primary" />
                     </div>
                     {/* Education card with card-hover */}

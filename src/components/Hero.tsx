@@ -1,4 +1,5 @@
  import { useScrollAnimation } from "../hooks/useScrollAnimation";
+ import ElasticMesh from "./ElasticMesh";
 
 // // NEW CONSTANT for the hover effect
  const BUTTON_HOVER_CLASSES =
@@ -37,11 +38,25 @@
 
          {/* 4. Removed duplicate nesting wrapper so the hero image scales centered inside the parent */}
          <div className={`w-full mb-8 ${isVisible ? "fade-up" : "opacity-0"}`}>
-           <img
-             src="/public/images/hero2.png"
-             alt="Multimedia Artist Profile"
-             className="w-full h-auto object-contain mx-auto"
-           />
+           <div className="mx-auto aspect-[896/294] w-full">
+             <ElasticMesh
+               image="/public/images/hero2.png"
+               className="h-full w-full"
+               showGrid={false}
+               borderRadius={24}
+               stiffness={0.06}
+               damping={0.22}
+               grabRadius={0.5}
+               pull={0.28}
+               wobble={4}
+               tilt={8}
+               shading={0.35}
+               resolution={22}
+               interaction="hover"
+               enabled
+               style={{ touchAction: "pan-y" }}
+             />
+           </div>
          </div>
 
          {/* 5. Paragraph remains at max-w-2xl so the reading line length is comfortable */}
