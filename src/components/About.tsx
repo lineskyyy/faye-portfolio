@@ -35,6 +35,7 @@ export default function About() {
   // ];
 
   return (
+    // <section ref={ref} id="about" className="py-20 px-6">
     <section ref={ref} id="about" className="py-20 px-6 bg-gradient-to-b from-[#9cb080] to-[#1e5247]">
       <div className="max-w-6xl mx-auto">
         {/* 2-Column Grid starting at the very top */}

@@ -69,8 +69,10 @@ export interface GalleryProject {
 
 export default function Gallery({
   currentProject,
+  fitImage = false,
 }: {
   currentProject?: GalleryProject;
+  fitImage?: boolean;
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +105,7 @@ export default function Gallery({
 
     if (hasPdf && currentProject?.pdfUrl) {
       // Guard against stale async results from a previously requested PDF.
-const url = currentProject.pdfUrl;
+      const url = currentProject.pdfUrl;
       requestedUrlRef.current = url;
       setPdfError(false);
       setPdfPages([]);
@@ -170,7 +172,7 @@ const url = currentProject.pdfUrl;
   return (
     <div className="relative w-full">
       {/* Action Button: Opens Fullscreen Presentation View or Image Lightbox */}
-      <div className="flex justify-end mb-4">
+      {/* <div className="flex justify-end mb-4">
         <button
           onClick={openViewer}
           aria-label={
@@ -181,26 +183,64 @@ const url = currentProject.pdfUrl;
           {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
           {hasPdf ? "View PDF" : "Expand View"}
         </button>
-      </div>
+      </div> */}
 
-      {/* 3D Carousel Stage */}
-      <div
-        className="relative w-full h-[240px] sm:h-[340px] md:h-[440px]"
-        style={{ perspective: "2000px" }}
-      >
-        {images.map((img, i) => {
-          const total = images.length;
-          const relativeIndex = (i - selectedIndex + total) % total;
-          const offset =
-            relativeIndex <= total / 2 ? relativeIndex : relativeIndex - total;
-          const isSelected = i === selectedIndex;
+      {/* Action Button: Only show for PDF presentations or multi-image carousels */}
+      {(hasPdf || images.length > 1) && (
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={openViewer}
+            aria-label={
+              hasPdf
+                ? "View full PDF presentation"
+                : "Open gallery in fullscreen"
+            }
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-tred/20 hover:text-tred transition-all duration-300 hover:scale-105 text-sm font-medium backdrop-blur-sm"
+          >
+            {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
+            {hasPdf ? "View PDF" : "Expand View"}
+          </button>
+        </div>
+      )}
 
-          return (
-            <div
-              key={i}
-              className="absolute top-1/2 left-1/2 cursor-pointer"
-              style={{
-                transform: `
+      {/* Single Image - fitted wrapper with hover preview */}
+      {images.length === 1 ? (
+        <div
+          className="relative w-fit mx-auto rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] overflow-hidden bg-black/40 cursor-pointer group"
+          onClick={openViewer}
+        >
+          <img
+            src={images[0] || "/placeholder.svg"}
+            alt={`${currentProject?.title ?? "Project"}`}
+            className="w-full max-h-[75vh] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+            <span className="text-sm font-medium text-white/90 bg-black/50 px-4 py-2 rounded-full border border-white/20 backdrop-blur-md">
+              Click to preview fullscreen
+            </span>
+          </div>
+        </div>
+      ) : (
+        // 3D Carousel Stage - Tighter vertical height
+        <div
+          className="relative w-full h-[200px] sm:h-[280px] md:h-[350px]"
+          style={{ perspective: "2000px" }}
+        >
+          {images.map((img, i) => {
+            const total = images.length;
+            const relativeIndex = (i - selectedIndex + total) % total;
+            const offset =
+              relativeIndex <= total / 2
+                ? relativeIndex
+                : relativeIndex - total;
+            const isSelected = i === selectedIndex;
+
+            return (
+              <div
+                key={i}
+                className="absolute top-1/2 left-1/2 cursor-pointer"
+                style={{
+                  transform: `
                   translate(-50%, -50%)
                   translateX(${offset * 150}px)
                   translateZ(${isSelected ? "120px" : "0px"})
@@ -208,54 +248,69 @@ const url = currentProject.pdfUrl;
                   scale(${isSelected ? 1.05 : 0.9})
                   translateY(${isSelected ? "0px" : "12px"})
                 `,
-                zIndex: 20 - Math.abs(offset),
-                opacity: Math.abs(offset) > 2 ? 0 : 1,
-                transition:
-                  "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease",
-              }}
-              onClick={() => setSelectedIndex(i)}
-            >
-              <img
-                src={img || "/placeholder.svg"}
-                alt={`${currentProject?.title ?? "Project"} preview ${i + 1}`}
-                className="w-[78vw] sm:w-[280px] md:w-[340px] h-[150px] sm:h-[190px] md:h-[240px] object-cover rounded-xl border border-accent/20 shadow-[0_0_20px_rgba(254,73,123,0.4)] mx-auto"
-              />
-              <div
-                className="absolute left-0 right-0"
-                style={{ top: "calc(100% + 8px)" }}
+                  zIndex: 20 - Math.abs(offset),
+                  opacity: Math.abs(offset) > 2 ? 0 : 1,
+                  transition:
+                    "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease",
+                }}
+                onClick={() => setSelectedIndex(i)}
               >
                 <img
                   src={img || "/placeholder.svg"}
-                  alt=""
-                  className="w-[78vw] sm:w-[280px] md:w-[340px] h-[60px] sm:h-[80px] md:h-[100px] object-cover object-bottom rounded-xl scale-y-[-1] mx-auto"
-                  style={{
-                    opacity: isSelected ? 0.4 : 0.3,
-                    maskImage:
-                      "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
-                    WebkitMaskImage:
-                      "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
-                  }}
+                  alt={`${currentProject?.title ?? "Project"} preview ${i + 1}`}
+                  className={`
+                  mx-auto transition-all duration-300
+                  ${
+                    fitImage
+                      ? "w-[78vw] sm:w-[340px] md:w-[420px] h-[200px] sm:h-[260px] md:h-[320px] object-contain border-0 shadow-none filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]"
+                      : "rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] w-[78vw] sm:w-[280px] md:w-[340px] h-[150px] sm:h-[190px] md:h-[240px] object-cover"
+                  }
+                `}
                 />
+                <div
+                  className="absolute left-0 right-0"
+                  style={{ top: "calc(100% + 8px)" }}
+                >
+                  <img
+                    src={img || "/placeholder.svg"}
+                    alt=""
+                    className={`
+                    mx-auto rounded-xl scale-y-[-1]
+                    ${
+                      fitImage
+                        ? "w-[78vw] sm:w-[340px] md:w-[420px] h-[80px] sm:h-[110px] md:h-[140px] object-contain object-bottom bg-black/40"
+                        : "w-[78vw] sm:w-[280px] md:w-[340px] h-[60px] sm:h-[80px] md:h-[100px] object-cover object-bottom"
+                    }
+                  `}
+                    style={{
+                      opacity: isSelected ? 0.4 : 0.3,
+                      maskImage:
+                        "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                      WebkitMaskImage:
+                        "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Navigation Controls */}
       {images.length > 1 && (
-        <div className="flex items-center justify-center gap-6 mt-16">
+        <div className="relative z-30 flex items-center justify-center gap-6 mt-16">
           <button
             onClick={() => goTo(-1)}
             aria-label="Previous image"
-            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110"
+            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110 cursor-pointer"
           >
             <ChevronLeft size={24} />
           </button>
           <button
             onClick={() => goTo(1)}
             aria-label="Next image"
-            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110"
+            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110 cursor-pointer"
           >
             <ChevronRight size={24} />
           </button>
@@ -272,8 +327,10 @@ const url = currentProject.pdfUrl;
               aria-label={`View page ${i + 1}`}
               className={`w-14 h-10 rounded-md overflow-hidden border-2 transition-all duration-300 ${
                 i === selectedIndex
-                  ? "border-pred scale-110 shadow-[0_0_20px_rgba(254,73,123,0.4)]"
-                  : "border-secondary/30 opacity-60 hover:opacity-100"
+                  ? fitImage
+                    ? "border-none shadow-none filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]"
+                    : "border-pred shadow-[0_0_30px_rgba(254,73,123,0.35)]"
+                  : "opacity-40"
               }`}
             >
               <img
@@ -330,7 +387,7 @@ const url = currentProject.pdfUrl;
               className="relative flex-1 w-full h-full min-h-0 my-2 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-{/* Loading state: hide all slides to avoid showing misleading images */}
+              {/* Loading state: hide all slides to avoid showing misleading images */}
               {isPdfLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-20 bg-black/80 backdrop-blur-sm rounded-lg">
                   <span

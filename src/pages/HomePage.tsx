@@ -6,6 +6,8 @@ import Skills from "../components/Skills"
 import Contact from "../components/Contact"
 import FloatingElements from "../components/FloatingElements"
 import { useState, useEffect } from "react"
+import AppStore from "../components/AppStore"
+import { TestBg } from "../components/TestBg"
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0)
@@ -18,11 +20,14 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      <FloatingElements scrollY={scrollY} />
+      
       <Navigation />
       <main>
         <Hero />
+        {/* <TestBg /> */}
+        <FloatingElements scrollY={scrollY} />
         <About />
+        {/* <AppStore /> */}
         <Projects />
         <Skills />
         <Contact />
