@@ -1,5 +1,5 @@
 import ElasticMesh from "../components/ElasticMesh";
-import { Instagram, Linkedin, Dribbble, Mail } from "lucide-react";
+import { Instagram, Linkedin, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
