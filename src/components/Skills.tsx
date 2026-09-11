@@ -9,12 +9,12 @@ type Skill = {
 };
 
 const skills: Skill[] = [
-  { name: "Adobe Illustrator", icon: "/public/images/ai.png" },
-  { name: "Adobe Lightroom", icon: "/public/images/al.png" },
-  { name: "Adobe Photoshop", icon: "/public/images/ap.png" },
-  { name: "Adobe Premiere", icon: "/public/images/pr.png" },
-  { name: "Canva", icon: "/public/images/canva.png" },
-  { name: "Clip Studio Paint", icon: "/public/images/csp.png" },
+  { name: "Adobe Illustrator", icon: "/images/ai.png" },
+  { name: "Adobe Lightroom", icon: "/images/al.png" },
+  { name: "Adobe Photoshop", icon: "/images/ap.png" },
+  { name: "Adobe Premiere", icon: "/images/pr.png" },
+  { name: "Canva", icon: "/images/canva.png" },
+  { name: "Clip Studio Paint", icon: "/images/csp.png" },
 ];
 
 const LOOP_SPEED = 100;

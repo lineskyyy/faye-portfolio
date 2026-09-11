@@ -232,7 +232,7 @@ export default function About() {
                 className="w-full max-w-md overflow-hidden"
               >
                 <img
-                  src="/public/images/id.png"
+                  src="/images/id.png"
                   alt="Multimedia Artist Profile"
                   className="h-full w-full object-contain"
                   style={idStyle}

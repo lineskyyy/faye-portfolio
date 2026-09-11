@@ -26,7 +26,7 @@ export default function Footer() {
             {/* Social Media Icons */}
             <div className="flex items-center gap-4 text-[#fff4e7]/80 pt-1">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/soapmiranda/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -35,7 +35,7 @@ export default function Footer() {
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/sophia-miranda-75258a210/"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
@@ -43,7 +43,7 @@ export default function Footer() {
               >
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a
+              {/* <a
                 href="https://dribbble.com"
                 target="_blank"
                 rel="noreferrer"
@@ -51,9 +51,9 @@ export default function Footer() {
                 className="transition-colors hover:text-white"
               >
                 <Dribbble className="h-5 w-5" />
-              </a>
+              </a> */}
               <a
-                href="mailto:contact@example.com"
+                href="mailto:mirandasophia10@gmail.com"
                 aria-label="Email"
                 className="transition-colors hover:text-white"
               >
