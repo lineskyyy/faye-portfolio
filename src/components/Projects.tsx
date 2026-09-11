@@ -1,10 +1,8 @@
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
-import { useEffect, useRef, useState } from "react";
-
-
-import { Link } from "react-router-dom";
+import type { CSSProperties } from "react";
+import { useNavigate } from "react-router-dom";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 import { useScrollRevealProgress } from "../hooks/useScrollRevealProgress";
+import BorderGlow from "./ui/BorderGlowProps";
 
 type Project = {
   id: number;
@@ -17,25 +15,32 @@ type Project = {
   tab: string;
 };
 
-type CardState = "idle" | "opening" | "open" | "closing";
-
 export default function Projects() {
-    const { ref, isVisible } = useScrollAnimation();
-  const { progress, reduceMotion } = useScrollRevealProgress("work");
+  const { ref, isVisible } = useScrollAnimation();
+  const navigate = useNavigate();
 
+  // 1. Progress when scrolling INTO the Projects section
+  const { progress: entryProgress, reduceMotion } = useScrollRevealProgress("work");
+
+  // 2. Progress when scrolling OUT OF Projects into Skills
+  const { progress: exitProgress } = useScrollRevealProgress("skills");
+
+  // Calculate exit effect with threshold delay so blur doesn't trigger immediately
+  const exitThreshold = 0.25; // Delays exit effect start until 25% scrolled into next section
+  const delayedExit = Math.max(0, (exitProgress - exitThreshold) / (1 - exitThreshold));
+
+  // 3. Combine entry reveal animation with delayed exit blur/fade out effect
   const projectsRevealStyle: CSSProperties | undefined = reduceMotion
     ? undefined
     : {
-        opacity: 0.78 + progress * 0.22,
-        transform: `translate3d(0, ${(1 - progress) * 60}px, 0) scale(${0.965 + progress * 0.035})`,
+        opacity: (0.78 + entryProgress * 0.22) * (1 - delayedExit * 0.58),
+        filter: `blur(${delayedExit * 11}px)`,
+        transform: `translate3d(0, ${(1 - entryProgress) * 60 - delayedExit * 44}px, 0) scale(${
+          (0.965 + entryProgress * 0.035) * (1 - delayedExit * 0.025)
+        })`,
         transformOrigin: "center top",
-        willChange: "opacity, transform",
+        willChange: "filter, opacity, transform",
       };
-
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
-  const [activeRect, setActiveRect] = useState<DOMRect | null>(null);
-  const [cardState, setCardState] = useState<CardState>("idle");
-  const closeTimer = useRef<number | null>(null);
 
   const projects: Project[] = [
     {
@@ -54,92 +59,59 @@ export default function Projects() {
       category: "Animation",
       description:
         "Animated sequences and motion graphics for brand storytelling.",
-      image: "/projects/presentations/presentation1/p4.png",
+      image: "/projects/presentations/presentation1/p1.png",
       hoverImage: "/projects/presentations/presentation1/p3.png",
       tags: ["Animation", "Motion Graphics", "Branding"],
       tab: "presentations",
     },
     {
       id: 3,
-      title: "Branding",
-      category: "Web Design",
-      description:
-        "An immersive web experience combining design and interactive elements.",
-      image: "/projects/branding/p5.jpg",
-      hoverImage: "/projects/branding/p9.jpg",
-      tags: ["Web Design", "Interactive", "UX/UI"],
-      tab: "branding",
-    },
-    {
-      id: 4,
       title: "Graphic Designs",
       category: "3D Art",
       description: "Character modeling and design for digital media projects.",
       image: "/projects/graphicd/p9.jpg",
-      hoverImage: "/projects/graphicd/p10.jpg",
+      hoverImage: "/projects/graphicd/p7.jpg",
       tags: ["3D Art", "Character Design", "Modeling"],
       tab: "graphic-design",
     },
+    {
+      id: 4,
+      title: "Branding",
+      category: "Web Design",
+      description:
+        "An immersive web experience combining design and interactive elements.",
+      image: "/projects/branding/p11.jpg",
+      hoverImage: "/projects/branding/p9.jpg",
+      tags: ["Web Design", "Interactive", "UX/UI"],
+      tab: "branding",
+    },
   ];
 
-  const openProject = (
-    project: Project,
-    event: ReactMouseEvent<HTMLButtonElement>,
-  ) => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current);
-
-    setActiveProject(project);
-    setActiveRect(event.currentTarget.getBoundingClientRect());
-    setCardState("opening");
+  const handleCardClick = (tab: string) => {
+    navigate(`/work?tab=${tab}`);
   };
-
-  const closeProject = () => {
-    if (!activeProject || cardState === "closing") return;
-
-    setCardState("closing");
-    closeTimer.current = window.setTimeout(() => {
-      setActiveProject(null);
-      setActiveRect(null);
-      setCardState("idle");
-    }, 420);
-  };
-
-  useEffect(() => {
-    if (!activeProject || cardState !== "opening") return;
-
-    const frame = window.requestAnimationFrame(() => setCardState("open"));
-    return () => window.cancelAnimationFrame(frame);
-  }, [activeProject, cardState]);
-
-  useEffect(() => {
-    if (!activeProject) return;
-
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeProject();
-    };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", closeOnEscape);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [activeProject, cardState]);
 
   return (
-    <section ref={ref} id="work" className="px-6 pb-15 md:px-8">
-            <div className="mx-auto max-w-5xl" style={projectsRevealStyle}>
-
-        <div className={`mb-10 ${reduceMotion ? "opacity-100" : isVisible ? "fade-up" : "opacity-0"}`}>
-          <h2 className="mb-4 text-4xl font-bold md:text-5xl">
+    <section ref={ref} id="work" className="px-6 pb-12 md:px-8">
+      {/* Updated max-width from max-w-4xl to max-w-6xl for consistency with About.tsx */}
+      <div className="mx-auto max-w-6xl" style={projectsRevealStyle}>
+        {/* Header */}
+        <div
+          className={`mb-6 md:mb-8 ${reduceMotion ? "opacity-100" : isVisible ? "fade-up" : "opacity-0"}`}
+        >
+          <h2 className="font-heading mb-4 text-4xl font-bold md:text-5xl">
             Featured <span className="text-tred">Work</span>
           </h2>
-          <div className="h-1 w-16 rounded-full bg-gradient-to-r from-sred to-accent" />
+          <div className="h-1 w-12 rounded-full bg-gradient-to-r from-sred to-accent" />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[repeat(20,minmax(0,1fr))] lg:grid-rows-[380px_380px]">
+        {/* 
+          Grid scaled down:
+          - Mobile: height 280px
+          - Small Laptop (lg): 180px fixed rows (down from 220px)
+          - Large Desktop (xl): 280px fixed rows (down from 380px)
+        */}
+        <div className="-mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-2 md:gap-3.5 md:overflow-visible md:p-0 lg:grid-cols-[repeat(20,minmax(0,1fr))] lg:grid-rows-[180px_180px] xl:grid-rows-[280px_280px]">
           {projects.map((project, index) => {
             const cardLayout = [
               "lg:col-start-1 lg:col-span-12",
@@ -147,28 +119,34 @@ export default function Projects() {
               "lg:col-start-1 lg:col-span-8",
               "lg:col-start-9 lg:col-span-12",
             ][index];
-            const isActive = activeProject?.id === project.id;
 
             return (
               <button
                 type="button"
                 key={project.id}
-                onClick={(event) => openProject(project, event)}
-                aria-label={`Open ${project.title}`}
-                aria-hidden={isActive}
-                className={`group relative min-h-[300px] overflow-hidden rounded-2xl text-left outline-none transition-[transform,opacity] duration-300 will-change-transform hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-background lg:min-h-0 ${
+                onClick={() => handleCardClick(project.tab)}
+                aria-label={`View ${project.title}`}
+                className={`group relative h-full min-h-[280px] w-[80vw] max-w-[280px] shrink-0 snap-center overflow-hidden rounded-xl text-left outline-none transition-[transform,opacity] duration-300 will-change-transform hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-background md:min-h-0 md:w-auto md:max-w-none md:shrink ${
                   cardLayout
                 } ${
-                  isActive
-                    ? "pointer-events-none opacity-0"
-                    : isVisible
-                      ? "fade-up opacity-100"
-                      : "opacity-0"
+                  isVisible
+                    ? "fade-up opacity-100"
+                    : "opacity-0"
                 }`}
                 style={{
                   animationDelay: isVisible ? `${(index + 1) * 0.1}s` : "0s",
                 }}
               >
+                {/* BorderGlow overlay */}
+                <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden rounded-xl">
+                  <BorderGlow
+                    glowColor="255, 255, 255"
+                    glowRadius={16}
+                    glowIntensity={0.5}
+                  />
+                </div>
+
+                {/* Card image contents */}
                 <img
                   src={project.image || "/placeholder.svg"}
                   alt=""
@@ -182,15 +160,19 @@ export default function Projects() {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/5 to-black/25" />
-                <div className="relative z-10 p-5 md:p-6">
-                  <p className="mb-2 text-xs font-medium tracking-wide text-white/80">
+
+                {/* Card Labels & Titles */}
+                <div className="absolute left-0 top-0 z-10 p-3.5 lg:p-4 xl:p-5">
+                  <p className="mb-0.5 text-[11px] font-medium tracking-wide text-white/80 md:mb-1">
                     {project.category}
                   </p>
-                  <h3 className="max-w-[22rem] text-xl font-semibold leading-tight text-white md:text-2xl">
+
+                  <h3 className="max-w-[18rem] text-base font-semibold leading-tight text-white sm:text-lg lg:text-lg xl:text-xl">
                     {project.title}
                   </h3>
                 </div>
-                <span className="absolute bottom-5 right-5 z-10 translate-y-2 rounded-full border border-white/60 bg-black/10 px-4 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+
+                <span className="absolute bottom-3 right-3 z-10 translate-y-2 rounded-full border border-white/60 bg-black/10 px-2.5 py-1 text-[11px] font-semibold text-white opacity-0 backdrop-blur-sm transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 md:bottom-4 md:right-4 md:px-3 md:py-1.5">
                   View details
                 </span>
               </button>
@@ -198,96 +180,6 @@ export default function Projects() {
           })}
         </div>
       </div>
-
-      {activeProject && activeRect && (
-        <div
-          className={`fixed inset-0 z-50 bg-black/75 backdrop-blur-sm transition-opacity duration-300 ${
-            cardState === "open" ? "opacity-100" : "opacity-0"
-          }`}
-          role="presentation"
-          onClick={closeProject}
-        >
-          <article
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`project-title-${activeProject.id}`}
-            onClick={(event) => event.stopPropagation()}
-            className={`fixed z-[51] overflow-hidden rounded-2xl bg-background shadow-2xl will-change-transform transition-[transform,width,height,border-radius] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              cardState === "open"
-                ? "left-1/2 top-1/2 h-[min(680px,calc(100vh-32px))] w-[min(760px,calc(100vw-32px))] -translate-x-1/2 -translate-y-1/2"
-                : ""
-            }`}
-            style={
-              cardState !== "open"
-                ? {
-                    left: activeRect.left,
-                    top: activeRect.top,
-                    width: activeRect.width,
-                    height: activeRect.height,
-                    transform: "translate3d(0, 0, 0)",
-                  }
-                : undefined
-            }
-          >
-            <div className="relative h-[220px] shrink-0 overflow-hidden md:h-[360px]">
-              <img
-                src={activeProject.image || "/placeholder.svg"}
-                alt={activeProject.title}
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-16 text-white transition-[opacity,transform] duration-300 delay-75 md:bottom-8 md:left-8">
-                <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-white/75">
-                  {activeProject.category}
-                </p>
-                <h3
-                  id={`project-title-${activeProject.id}`}
-                  className="text-2xl font-bold md:text-4xl"
-                >
-                  {activeProject.title}
-                </h3>
-              </div>
-              <button
-                type="button"
-                aria-label="Close project details"
-                onClick={closeProject}
-                className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-xl text-white backdrop-blur-sm transition hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-              >
-                ×
-              </button>
-            </div>
-
-            <div
-              className={`space-y-5 overflow-hidden p-6 transition-[opacity,transform,max-height] duration-300 ease-out md:p-8 ${
-                cardState === "open"
-                  ? "max-h-[360px] translate-y-0 opacity-100"
-                  : "max-h-0 -translate-y-2 opacity-0"
-              }`}
-            >
-              <p className="text-base leading-7 text-muted-foreground">
-                {activeProject.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {activeProject.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-secondary/20 px-3 py-1 text-sm font-medium text-accent"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <Link
-                to={`/work?tab=${activeProject.tab}`}
-                onClick={closeProject}
-                className="inline-flex rounded-full bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-80"
-              >
-                Explore project
-              </Link>
-            </div>
-          </article>
-        </div>
-      )}
     </section>
   );
 }

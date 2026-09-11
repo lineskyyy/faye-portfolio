@@ -58,12 +58,11 @@ const projects: GalleryProject[] = [
 ];
 
 export default function DigitalIllustration() {
-  // State to track which project is actively selected for modal viewing
   const [activeModalProject, setActiveModalProject] =
     useState<GalleryProject | null>(null);
 
   return (
-    <div className="space-y-32 py-6">
+    <div className="space-y-20">
       {/* Hidden Gallery Instance to handle Modal Preview for Marquee items */}
       {activeModalProject && (
         <div className="hidden">
@@ -77,31 +76,17 @@ export default function DigitalIllustration() {
         return (
           <section key={project.id} className="max-w-6xl mx-auto px-6">
             {/* Header Block */}
-            <div className="mb-10 space-y-3">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold text-accent uppercase tracking-widest bg-accent/10 border border-accent/30 px-3 py-1 rounded-full backdrop-blur-md">
-                  {project.category}
-                </span>
-                <span className="text-xs text-muted-foreground font-mono">
-                  {project.year}
-                </span>
-              </div>
-
-              <h1 className="text-4xl md:text-6xl font-extrabold text-foreground tracking-tight leading-tight">
+            <div className="mb-12">
+              <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
                 {project.title}
               </h1>
-
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
-                {project.description}
-              </p>
             </div>
 
             {/* Showcase Stage */}
-            <div className="mb-14">
+            <div className="mb-16">
               {isFoodSeries ? (
                 /* Infinite Smooth Marquee with Edge Fades & Hover Pause */
-                <div className="rrelative w-full overflow-hidden py-2">
-                  {/* Left & Right Gradient Mask Overlays */}
+                <div className="relative w-full overflow-hidden py-2">
                   <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-beige to-transparent z-10" />
                   <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-beige to-transparent z-10" />
 
@@ -125,7 +110,6 @@ export default function DigitalIllustration() {
                               alt={cleanName ?? "Illustration"}
                               className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
                             />
-                            {/* Subtle Text Badge below/on hover without dark card background */}
                             <div className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center pb-1">
                               <span className="text-xs font-semibold text-white/90 bg-black/60 px-2.5 py-1 rounded-full border border-white/10 backdrop-blur-md capitalize truncate max-w-[90%]">
                                 {cleanName}
@@ -139,64 +123,67 @@ export default function DigitalIllustration() {
                 </div>
               ) : (
                 /* 3D Gallery Stage for Character Designs */
-                  <Gallery currentProject={project} fitImage />
+                <Gallery currentProject={project} fitImage />
               )}
             </div>
 
-            {/* Details & Description Section */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start">
-              {/* Main Narrative (8 Cols) */}
-              <div className="lg:col-span-8 bg-secondary/5 p-6 sm:p-8 rounded-2xl border border-secondary/20 space-y-4">
-                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-accent inline-block" />
+            {/* Details Grid */}
+            <div className="grid lg:grid-cols-3 gap-10 mb-16">
+              {/* Full Description & Context */}
+              <div className="lg:col-span-2 space-y-6">
+                <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
                   Project Overview
                 </h2>
-                <p className="text-muted-foreground leading-relaxed text-base sm:text-lg">
+                <p className="text-lg text-about-ink leading-relaxed">
                   {project.fullDescription}
                 </p>
               </div>
 
-              {/* Specs Sidebar (4 Cols) */}
-              <div className="lg:col-span-4 bg-secondary/10 p-6 rounded-2xl border border-secondary/30 space-y-5">
-                <h3 className="text-lg font-bold text-primary">
-                  Specifications
-                </h3>
-
-                <div className="space-y-4 text-sm">
-                  {/* Tools */}
-                  <div>
-                    <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider block mb-2">
-                      Tools & Software
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tools.map((tool) => (
-                        <span
-                          key={tool}
-                          className="px-2.5 py-1 bg-background/60 border border-secondary/30 rounded-md text-xs font-medium text-foreground"
-                        >
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="pt-3 border-t border-secondary/20">
-                    <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider block mb-2">
-                      Tags
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2.5 py-1 bg-accent/15 border border-accent/30 text-accent rounded-full text-xs font-medium"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
+              {/* Metadata & CTAs */}
+              <div className="space-y-8">
+                {/* Metadata Card */}
+                <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
+                  <h3 className="text-2xl font-bold text-sred mb-4">Details</h3>
+                  <div className="space-y-3 text-sm">
+                    {/* <p className="flex items-center gap-3 text-foreground">
+                      <span className="font-semibold text-about-ink/80">Category:</span>{" "}
+                      <span className="text-sred font-medium">{project.category}</span>
+                    </p> */}
+                    <p className="flex items-center gap-3 text-foreground">
+                      <span className="font-semibold text-about-ink/80">
+                        Year:
+                      </span>{" "}
+                      <span className="text-sred font-medium">
+                        {project.year}
+                      </span>
+                    </p>
+                    <div className="pt-2 border-t border-secondary/20">
+                      <h4 className="text-about-ink/80 font-semibold mb-2">
+                        Tools Used:
+                      </h4>
+                      <ul className="text-about-ink/80 list-disc list-inside ml-2 space-y-1">
+                        {project.tools.map((tool) => (
+                          <li key={tool}>{tool}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
+
+                {/* Tags Section */}
+                {/* <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-sred">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div> */}
               </div>
             </div>
           </section>

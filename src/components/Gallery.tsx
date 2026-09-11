@@ -43,7 +43,6 @@ async function renderPdfPages(
     await page.render({ canvas, canvasContext: ctx, viewport }).promise;
     pages.push(canvas.toDataURL("image/jpeg", 0.92));
 
-    // Report progress after each page (start at 10% so the bar moves immediately)
     if (onProgress) {
       onProgress(Math.round((i / total) * 100));
     }
@@ -59,7 +58,7 @@ export interface GalleryProject {
   description: string;
   fullDescription: string;
   images: string[];
-  pdfUrl?: string; // Optional PDF file path
+  pdfUrl?: string;
   tags: string[];
   year: string;
   tools: string[];
@@ -82,7 +81,10 @@ export default function Gallery({
   const [progress, setProgress] = useState(0);
   const requestedUrlRef = useRef<string | null>(null);
 
-  // Safely extract properties using optional chaining
+  // Touch Swipe Handling for Mobile
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   const images = currentProject?.images || [];
   const hasPdf = Boolean(currentProject?.pdfUrl);
 
@@ -99,12 +101,36 @@ export default function Gallery({
     [images.length, pdfPages.length],
   );
 
+  // Swipe detection helpers
+  const minSwipeDistance = 40;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      goTo(1);
+    } else if (isRightSwipe) {
+      goTo(-1);
+    }
+  };
+
   const openViewer = useCallback(() => {
     setSelectedIndex(0);
     setIsOpen(true);
 
     if (hasPdf && currentProject?.pdfUrl) {
-      // Guard against stale async results from a previously requested PDF.
       const url = currentProject.pdfUrl;
       requestedUrlRef.current = url;
       setPdfError(false);
@@ -112,12 +138,10 @@ export default function Gallery({
       setPdfLoading(true);
       setProgress(0);
 
-      // Skip rendering if already cached for this URL
       renderPdfPages(url, (percent) => {
         if (requestedUrlRef.current === url) setProgress(percent);
       })
         .then((rendered) => {
-          // Only apply state if this is still the most recent request.
           if (requestedUrlRef.current === url && rendered.length > 0) {
             setPdfPages(rendered);
           }
@@ -160,10 +184,8 @@ export default function Gallery({
     };
   }, [isOpen, goTo, close]);
 
-  // Guard clause: Return early if currentProject is undefined or lacks assets
   if (!currentProject || (images.length === 0 && !hasPdf)) return null;
 
-  // When viewing a PDF in the modal we show PDF pages; otherwise preview images.
   const isPdfView = hasPdf && isOpen;
   const isPdfLoading = isPdfView && (pdfLoading || pdfPages.length === 0);
   const displayImages = isPdfView && pdfPages.length > 0 ? pdfPages : images;
@@ -171,21 +193,7 @@ export default function Gallery({
 
   return (
     <div className="relative w-full">
-      {/* Action Button: Opens Fullscreen Presentation View or Image Lightbox */}
-      {/* <div className="flex justify-end mb-4">
-        <button
-          onClick={openViewer}
-          aria-label={
-            hasPdf ? "View full PDF presentation" : "Open gallery in fullscreen"
-          }
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-tred/20 hover:text-tred transition-all duration-300 hover:scale-105 text-sm font-medium backdrop-blur-sm"
-        >
-          {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
-          {hasPdf ? "View PDF" : "Expand View"}
-        </button>
-      </div> */}
-
-      {/* Action Button: Only show for PDF presentations or multi-image carousels */}
+      {/* Action Button: PDF / Expand View */}
       {(hasPdf || images.length > 1) && (
         <div className="flex justify-end mb-4">
           <button
@@ -195,7 +203,7 @@ export default function Gallery({
                 ? "View full PDF presentation"
                 : "Open gallery in fullscreen"
             }
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-tred/20 hover:text-tred transition-all duration-300 hover:scale-105 text-sm font-medium backdrop-blur-sm"
+            className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-tred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-105 text-xs sm:text-sm font-medium backdrop-blur-sm"
           >
             {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
             {hasPdf ? "View PDF" : "Expand View"}
@@ -203,7 +211,7 @@ export default function Gallery({
         </div>
       )}
 
-      {/* Single Image - fitted wrapper with hover preview */}
+      {/* Single Image View */}
       {images.length === 1 ? (
         <div
           className="relative w-fit mx-auto rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] overflow-hidden bg-black/40 cursor-pointer group"
@@ -212,119 +220,177 @@ export default function Gallery({
           <img
             src={images[0] || "/placeholder.svg"}
             alt={`${currentProject?.title ?? "Project"}`}
-            className="w-full max-h-[75vh] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+            className="w-full max-h-[60vh] sm:max-h-[75vh] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-            <span className="text-sm font-medium text-white/90 bg-black/50 px-4 py-2 rounded-full border border-white/20 backdrop-blur-md">
-              Click to preview fullscreen
+            <span className="text-xs sm:text-sm font-medium text-white/90 bg-black/50 px-4 py-2 rounded-full border border-white/20 backdrop-blur-md">
+              Tap to preview fullscreen
             </span>
           </div>
         </div>
       ) : (
-        // 3D Carousel Stage - Tighter vertical height
-        <div
-          className="relative w-full h-[200px] sm:h-[280px] md:h-[350px]"
-          style={{ perspective: "2000px" }}
-        >
-          {images.map((img, i) => {
-            const total = images.length;
-            const relativeIndex = (i - selectedIndex + total) % total;
-            const offset =
-              relativeIndex <= total / 2
-                ? relativeIndex
-                : relativeIndex - total;
-            const isSelected = i === selectedIndex;
-
-            return (
+        <>
+          {/* MOBILE CAROUSEL: Touch Swipe Container (Hidden on sm and larger screens) */}
+          <div className="block sm:hidden w-full">
+            <div
+              className="relative w-full overflow-hidden rounded-xl bg-black/20 p-2 border border-about-ink/20 touch-pan-y"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
               <div
-                key={i}
-                className="absolute top-1/2 left-1/2 cursor-pointer"
-                style={{
-                  transform: `
-                  translate(-50%, -50%)
-                  translateX(${offset * 150}px)
-                  translateZ(${isSelected ? "120px" : "0px"})
-                  rotateY(${offset * -25}deg)
-                  scale(${isSelected ? 1.05 : 0.9})
-                  translateY(${isSelected ? "0px" : "12px"})
-                `,
-                  zIndex: 20 - Math.abs(offset),
-                  opacity: Math.abs(offset) > 2 ? 0 : 1,
-                  transition:
-                    "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease",
-                }}
-                onClick={() => setSelectedIndex(i)}
+                className="flex transition-transform duration-300 ease-out"
+                style={{ transform: `translateX(-${selectedIndex * 100}%)` }}
               >
-                <img
-                  src={img || "/placeholder.svg"}
-                  alt={`${currentProject?.title ?? "Project"} preview ${i + 1}`}
-                  className={`
-                  mx-auto transition-all duration-300
-                  ${
-                    fitImage
-                      ? "w-[78vw] sm:w-[340px] md:w-[420px] h-[200px] sm:h-[260px] md:h-[320px] object-contain border-0 shadow-none filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]"
-                      : "rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] w-[78vw] sm:w-[280px] md:w-[340px] h-[150px] sm:h-[190px] md:h-[240px] object-cover"
-                  }
-                `}
+                {images.map((img, i) => (
+                  <div
+                    key={i}
+                    className="w-full flex-shrink-0 flex items-center justify-center p-1"
+                    onClick={openViewer}
+                  >
+                    <img
+                      src={img || "/placeholder.svg"}
+                      alt={`${currentProject?.title ?? "Project"} slide ${i + 1}`}
+                      className={`w-full max-h-[280px] rounded-lg ${
+                        fitImage
+                          ? "object-contain drop-shadow-md"
+                          : "object-cover h-[220px] border border-accent/20 shadow-md"
+                      }`}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Mobile Slide Counter Badge */}
+              <div className="absolute top-3 right-3 bg-black/60 text-white/90 text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/20 backdrop-blur-sm">
+                {selectedIndex + 1} / {images.length}
+              </div>
+            </div>
+
+            {/* Mobile Pagination Indicators */}
+            <div className="flex items-center justify-center gap-1.5 mt-3">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedIndex(i)}
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === selectedIndex
+                      ? "w-6 bg-pred"
+                      : "w-1.5 bg-about-ink/30"
+                  }`}
                 />
+              ))}
+            </div>
+          </div>
+
+          {/* DESKTOP CAROUSEL: 3D Stage View (Hidden on mobile screens) */}
+          <div
+            className="hidden sm:block relative w-full h-[380px] md:h-[480px]"
+            style={{ perspective: "2000px" }}
+          >
+            {images.map((img, i) => {
+              const total = images.length;
+              const relativeIndex = (i - selectedIndex + total) % total;
+              const offset =
+                relativeIndex <= total / 2
+                  ? relativeIndex
+                  : relativeIndex - total;
+              const isSelected = i === selectedIndex;
+
+              return (
                 <div
-                  className="absolute left-0 right-0"
-                  style={{ top: "calc(100% + 8px)" }}
+                  key={i}
+                  className="absolute top-1/2 left-1/2 cursor-pointer"
+                  style={{
+                    transform: `
+                    translate(-50%, -50%)
+                    translateX(${offset * 220}px)
+                    translateZ(${isSelected ? "140px" : "0px"})
+                    rotateY(${offset * -25}deg)
+                    scale(${isSelected ? 1.08 : 0.88})
+                    translateY(${isSelected ? "0px" : "16px"})
+                  `,
+                    zIndex: 20 - Math.abs(offset),
+                    opacity: Math.abs(offset) > 2 ? 0 : 1,
+                    transition:
+                      "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease",
+                  }}
+                  onClick={() => setSelectedIndex(i)}
                 >
                   <img
                     src={img || "/placeholder.svg"}
-                    alt=""
+                    alt={`${currentProject?.title ?? "Project"} preview ${
+                      i + 1
+                    }`}
                     className={`
-                    mx-auto rounded-xl scale-y-[-1]
+                    mx-auto transition-all duration-300
                     ${
                       fitImage
-                        ? "w-[78vw] sm:w-[340px] md:w-[420px] h-[80px] sm:h-[110px] md:h-[140px] object-contain object-bottom bg-black/40"
-                        : "w-[78vw] sm:w-[280px] md:w-[340px] h-[60px] sm:h-[80px] md:h-[100px] object-cover object-bottom"
+                        ? "sm:w-[480px] md:w-[600px] sm:h-[360px] md:h-[440px] object-contain border-0 shadow-none filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)]"
+                        : "rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] sm:w-[380px] md:w-[480px] sm:h-[300px] md:h-[380px] object-cover"
                     }
                   `}
-                    style={{
-                      opacity: isSelected ? 0.4 : 0.3,
-                      maskImage:
-                        "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
-                      WebkitMaskImage:
-                        "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
-                    }}
                   />
+                  <div
+                    className="absolute left-0 right-0"
+                    style={{ top: "calc(100% + 8px)" }}
+                  >
+                    <img
+                      src={img || "/placeholder.svg"}
+                      alt=""
+                      className={`
+                      mx-auto rounded-xl scale-y-[-1]
+                      ${
+                        fitImage
+                          ? "sm:w-[480px] md:w-[600px] sm:h-[130px] md:h-[160px] object-contain object-bottom bg-black/40"
+                          : "sm:w-[380px] md:w-[480px] sm:h-[110px] md:h-[130px] object-cover object-bottom"
+                      }
+                    `}
+                      style={{
+                        opacity: isSelected ? 0.4 : 0.3,
+                        maskImage:
+                          "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
 
-      {/* Navigation Controls */}
+      {/* Controls Bar: Prev/Next Buttons */}
       {images.length > 1 && (
-        <div className="relative z-30 flex items-center justify-center gap-6 mt-16">
+        <div className="relative z-30 flex items-center justify-center gap-4 sm:gap-6 mt-6 sm:mt-28">
           <button
             onClick={() => goTo(-1)}
             aria-label="Previous image"
-            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110 cursor-pointer"
+            className="p-2.5 sm:p-3 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-pred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-110 cursor-pointer"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
           <button
             onClick={() => goTo(1)}
             aria-label="Next image"
-            className="p-3 rounded-full bg-secondary/10 border border-secondary/30 text-secondary hover:bg-pred/20 hover:text-tred transition-all duration-300 hover:scale-110 cursor-pointer"
+            className="p-2.5 sm:p-3 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-pred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-110 cursor-pointer"
           >
-            <ChevronRight size={24} />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       )}
 
-      {/* Thumbnail Bar */}
+      {/* Desktop Thumbnail Strip */}
       {images.length > 1 && (
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+        <div className="hidden sm:flex flex-wrap items-center justify-center gap-3 mt-6">
           {images.map((img, i) => (
             <button
               key={i}
               onClick={() => setSelectedIndex(i)}
-              aria-label={`View page ${i + 1}`}
+              aria-label={`View image ${i + 1}`}
               className={`w-14 h-10 rounded-md overflow-hidden border-2 transition-all duration-300 ${
                 i === selectedIndex
                   ? fitImage
@@ -343,28 +409,27 @@ export default function Gallery({
         </div>
       )}
 
-      {/* Page-by-Page Fullscreen Presentation Modal */}
+      {/* Fullscreen Modal View */}
       {isOpen &&
         createPortal(
           <div
-            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6 select-none animate-in fade-in"
+            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-6 select-none animate-in fade-in"
             onClick={close}
           >
-            {/* Modal Header */}
             <div
-              className="w-full flex items-center justify-between shrink-0 z-10 pb-3"
+              className="w-full flex items-center justify-between shrink-0 z-10 pb-2 sm:pb-3"
               onClick={(e) => e.stopPropagation()}
             >
               <div>
-                <h3 className="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
+                <h3 className="text-white font-semibold text-sm sm:text-lg flex items-center gap-2">
                   {currentProject?.title}
                   {hasPdf && (
-                    <span className="text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full border border-accent/30 font-normal">
+                    <span className="text-[10px] sm:text-xs bg-accent/20 text-accent px-2 py-0.5 rounded-full border border-accent/30 font-normal">
                       Presentation Mode
                     </span>
                   )}
                 </h3>
-                <p className="text-xs text-white/60">
+                <p className="text-[11px] sm:text-xs text-white/60">
                   {isPdfLoading
                     ? "Loading presentation..."
                     : `Page ${Math.min(selectedIndex + 1, displayCount || 1)} of ${
@@ -376,18 +441,16 @@ export default function Gallery({
               <button
                 onClick={close}
                 aria-label="Close modal"
-                className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
+                className="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200"
               >
-                <X size={20} />
+                <X size={18} className="sm:w-5 sm:h-5" />
               </button>
             </div>
 
-            {/* Stage: Whole page fitted to screen */}
             <div
               className="relative flex-1 w-full h-full min-h-0 my-2 overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Loading state: hide all slides to avoid showing misleading images */}
               {isPdfLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-20 bg-black/80 backdrop-blur-sm rounded-lg">
                   <span
@@ -395,36 +458,32 @@ export default function Gallery({
                     role="status"
                     aria-label="Loading"
                   />
-                  <p className="text-sm text-white/80 font-medium text-center px-6">
-                    Rendering presentation pages, some PDF may take a while to
-                    load...
+                  <p className="text-xs sm:text-sm text-white/80 font-medium text-center px-6">
+                    Rendering presentation pages...
                   </p>
-                  {/* Percentage progress bar */}
-                  <div className="w-56 max-w-[70vw]">
+                  <div className="w-48 sm:w-56 max-w-[70vw]">
                     <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
                         style={{ width: `${Math.max(progress, 4)}%` }}
                       />
                     </div>
-                    <p className="text-xs text-white/70 text-center mt-2 font-semibold tabular-nums">
+                    <p className="text-[11px] sm:text-xs text-white/70 text-center mt-2 font-semibold tabular-nums">
                       {progress > 0 ? `${progress}%` : "Preparing..."}
                     </p>
                   </div>
                 </div>
               )}
 
-              {/* Error state */}
               {isPdfView && pdfError && !pdfLoading && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-20 bg-black/80 backdrop-blur-sm rounded-lg text-center px-6">
-                  <FileX size={40} className="text-accent" />
-                  <p className="text-sm text-white/80 font-medium max-w-md">
+                  <FileX size={36} className="text-accent" />
+                  <p className="text-xs sm:text-sm text-white/80 font-medium max-w-md">
                     Unable to load the PDF presentation.
                   </p>
                 </div>
               )}
 
-              {/* Slide display (images for non-PDF lightbox, or PDF pages when loaded) */}
               {displayImages.length > 0 && !isPdfLoading && (
                 <img
                   key={selectedIndex}
@@ -436,43 +495,37 @@ export default function Gallery({
                 />
               )}
 
-              {/* Side Page-by-Page Navigation Buttons */}
               {displayCount > 1 && (
                 <>
                   <button
                     onClick={() => goTo(-1)}
                     aria-label="Previous page"
-                    className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white transition-all duration-200 backdrop-blur-md shadow-lg hover:scale-110"
+                    className="absolute left-1 sm:left-6 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white transition-all duration-200 backdrop-blur-md shadow-lg hover:scale-110"
                   >
-                    <ChevronLeft size={28} />
+                    <ChevronLeft size={22} className="sm:w-7 sm:h-7" />
                   </button>
                   <button
                     onClick={() => goTo(1)}
                     aria-label="Next page"
-                    className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white transition-all duration-200 backdrop-blur-md shadow-lg hover:scale-110"
+                    className="absolute right-1 sm:right-6 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 text-white transition-all duration-200 backdrop-blur-md shadow-lg hover:scale-110"
                   >
-                    <ChevronRight size={28} />
+                    <ChevronRight size={22} className="sm:w-7 sm:h-7" />
                   </button>
                 </>
               )}
             </div>
 
-            {/* File Load Notice & Slide Strip */}
             <div
               className="w-full shrink-0 flex flex-col items-center gap-2 z-10"
               onClick={(e) => e.stopPropagation()}
             >
               {hasPdf && !isPdfLoading && !pdfError && (
-                <div className="flex items-center gap-2 text-xs text-white/60 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-white/60 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
                   <Info size={14} className="text-accent shrink-0" />
-                  <span>
-                    Viewing the presentation deck page-by-page, fitted to the
-                    screen.
-                  </span>
+                  <span>Viewing presentation deck page-by-page.</span>
                 </div>
               )}
 
-              {/* Thumbnail Strip for Direct Page Jump */}
               {displayCount > 1 && !isPdfLoading && (
                 <div className="w-full overflow-x-auto py-1 flex items-center justify-center gap-2 sm:gap-3 no-scrollbar">
                   {displayImages.map((img, i) => (
@@ -480,7 +533,7 @@ export default function Gallery({
                       key={i}
                       onClick={() => setSelectedIndex(i)}
                       aria-label={`Jump to page ${i + 1}`}
-                      className={`relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden transition-all duration-300 ${
+                      className={`relative flex-shrink-0 w-10 h-10 sm:w-16 sm:h-16 rounded-lg overflow-hidden transition-all duration-300 ${
                         i === selectedIndex
                           ? "ring-2 ring-primary scale-105 opacity-100 shadow-[0_0_12px_rgba(255,186,8,0.4)]"
                           : "opacity-40 hover:opacity-80"

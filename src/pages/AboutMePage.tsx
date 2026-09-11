@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import FloatingElements from "../components/FloatingElements";
-import { ArrowLeft, Briefcase, GraduationCap } from "lucide-react";
+import { ArrowLeft, Briefcase, GraduationCap, Quote } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
@@ -130,43 +130,23 @@ export default function AboutMePage() {
 
         {/* Hero Section */}
         <section ref={mainRef} className="max-w-6xl mx-auto px-6 mb-20">
-          <div className="flex flex-wrap justify-between items-start">
+          <div className="grid md:grid-cols-12 gap-10 items-start">
+            {/* Bio Column */}
             <div
-              className={`mb-8 ${
+              className={`md:col-span-7 ${
                 mainVisible ? "fade-up" : "opacity-0"
-              } order-first md:order-first`}
-            >
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
-                A Little About <span className="text-primary">My Journey</span>
-              </h1>
-              {/* Artistic separator */}
-              <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent rounded-full"></div>
-            </div>
-
-            <div
-              className={`w-full md:w-auto mb-8 hidden md:block bg-secondary/10 rounded-xl p-6 text-center shadow-lg border border-secondary/30 ${
-                mainVisible ? "fade-up fade-up-delay-2" : "opacity-0"
-              } order-last`}
-            >
-              <img
-                src="/images/Me.jpg"
-                alt="Sophia Miranda"
-                className="w-full h-auto rounded-lg mb-4"
-                style={{ maxWidth: "200px" }}
-              />
-              <p className="text-sm text-muted-foreground">
-                Sophia Nichole G. Miranda
-              </p>
-            </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Main Bio */}
-            <div
-              className={`md:col-span-2 ${
-                mainVisible ? "fade-up fade-up-delay-1" : "opacity-0"
               }`}
             >
-              <p className="text-lg text-foreground mb-6 leading-relaxed border-l-4 border-primary/50 pl-4">
+              <div className="mb-8">
+                <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
+                  A Little About{" "}
+                  <span className="text-primary">My Journey</span>
+                </h1>
+                {/* Artistic separator */}
+                <div className="w-16 h-1 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+              </div>
+
+              <p className="text-lg text-about-ink mb-6 leading-relaxed border-l-4 border-primary/50 pl-4">
                 I'm a passionate Multimedia Arts graduate with a deep love for
                 visual storytelling and creative expression. My journey spans
                 digital design, animation, and interactive media creation. With
@@ -174,24 +154,47 @@ export default function AboutMePage() {
                 skills, I create work that's not only visually stunning but also
                 purposeful and engaging.
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-lg text-about-ink leading-relaxed">
                 I thrive on transforming complex ideas into simple, beautiful,
                 and functional designs, always aiming to push the boundaries of
                 what's possible in the digital space.
               </p>
             </div>
 
-            {/* Image Placeholder / Quote */}
+            {/* Profile & Quote Container Column */}
             <div
-              className={`hidden md:block bg-secondary/10 rounded-xl p-6 text-center shadow-lg border border-secondary/30 ${
+              className={`md:col-span-5 flex flex-col items-center md:items-stretch gap-6 ${
                 mainVisible ? "fade-up fade-up-delay-2" : "opacity-0"
               }`}
             >
-              <p className="text-xl font-medium text-accent italic">
-                "Help, I'm still at the restaurant. Still sitting in a corner I
-                haunt"
-              </p>
-              <p className="mt-4 text-primary font-semibold">- Taylor Swift</p>
+              {/* Profile Image (Container removed & image made larger) */}
+              <div className="flex flex-col items-center text-center">
+                <div className="relative w-full max-w-[280px] overflow-hidden rounded-2xl border-2 border-primary/30 shadow-2xl card-hover">
+                  <img
+                    src="/images/Me.jpg"
+                    alt="Sophia Miranda"
+                    className="w-full h-auto transform hover:scale-105 transition-transform duration-500 object-cover"
+                  />
+                </div>
+                <p className="text-sm text-about-ink mt-3 font-bold tracking-wider uppercase">
+                  Sophia Nichole G. Miranda
+                </p>
+              </div>
+
+              {/* Taylor Swift Quote Card */}
+              <div className="bg-gradient-to-br from-secondary/15 to-secondary/5 rounded-2xl p-6 text-center shadow-lg border border-secondary/30 card-hover relative overflow-hidden">
+                <Quote
+                  size={40}
+                  className="absolute -right-1 -bottom-1 text-primary/15 pointer-events-none"
+                />
+                <p className="text-xl font-medium text-primary italic leading-snug">
+                  "Help, I'm still at the restaurant. Still sitting in a corner
+                  I haunt"
+                </p>
+                <p className="mt-3 text-primary font-semibold text-sm">
+                  — Taylor Swift
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -207,23 +210,21 @@ export default function AboutMePage() {
             {skills.map((skillGroup, index) => (
               <div
                 key={skillGroup.category}
-                // Enhanced card style for skill groups with card-hover
-                className={`bg-secondary/10 rounded-xl p-6 border border-secondary/30 card-hover ${
+                className={`bg-about-ink/10 rounded-xl p-6 border border-about-ink/30 card-hover ${
                   mainVisible ? "fade-up" : "opacity-0"
                 }`}
                 style={{
                   animationDelay: mainVisible ? `${(index + 1) * 0.1}s` : "0s",
                 }}
               >
-                <h3 className="text-xl font-bold text-primary mb-4">
+                <h3 className="text-xl font-bold text-about-ink mb-4">
                   {skillGroup.category}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {skillGroup.items.map((skill) => (
-                    // Enhanced skill pill styling
                     <span
                       key={skill}
-                      className="px-3 py-1 bg-secondary/20 text-accent rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+                      className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
                     >
                       {skill}
                     </span>
@@ -244,11 +245,12 @@ export default function AboutMePage() {
                   Professional <span className="text-primary">Experience</span>
                 </h2>
               </div>
-              <div className="space-y-6 relative border-l-4 border-secondary/30 pl-6">
+
+              <div className="relative space-y-6">
                 {experience.map((exp, index) => (
                   <div
                     key={index}
-                    className={`relative ${
+                    className={`relative pl-12 ${
                       mainVisible ? "fade-up" : "opacity-0"
                     }`}
                     style={{
@@ -257,12 +259,17 @@ export default function AboutMePage() {
                         : "0s",
                     }}
                   >
-                    {/* Timeline Dot with Primary color highlight */}
-                    <div className="absolute -left-8 top-1.5 p-1 bg-beige border-4 border-primary rounded-full">
-                      <Briefcase size={16} className="text-primary" />
+                    {/* Connecting Vertical Line (draws precisely between badge centers) */}
+                    {index < experience.length - 1 && (
+                      <div className="absolute left-[15px] top-[28px] bottom-[-24px] w-[2px] bg-sred/30 z-0"></div>
+                    )}
+
+                    {/* Centered Timeline Icon Badge aligned to the card title center */}
+                    <div className="absolute left-0 top-[22px] w-8 h-8 bg-beige border-2 border-primary rounded-full flex items-center justify-center z-10 shadow-sm">
+                      <Briefcase size={14} className="text-primary" />
                     </div>
-                    {/* Experience card with card-hover */}
-                    <div className="bg-secondary/10 rounded-xl p-6 border border-secondary/30 card-hover">
+
+                    <div className="bg-secondary/10 rounded-xl p-6 border border-about-ink/30 card-hover z-10 relative">
                       <h3 className="text-xl font-bold mb-1 text-foreground">
                         {exp.title}
                       </h3>
@@ -293,11 +300,12 @@ export default function AboutMePage() {
                   <span className="text-primary">Certifications</span>
                 </h2>
               </div>
-              <div className="space-y-6 relative border-l-4 border-secondary/30 pl-6">
+
+              <div className="relative space-y-6">
                 {education.map((edu, index) => (
                   <div
                     key={index}
-                    className={`relative ${
+                    className={`relative pl-12 ${
                       mainVisible ? "fade-up fade-up-delay-1" : "opacity-0"
                     }`}
                     style={{
@@ -306,12 +314,17 @@ export default function AboutMePage() {
                         : "0s",
                     }}
                   >
-                    {/* Timeline Dot with Primary color highlight */}
-                    <div className="absolute -left-8 top-1.5 p-1 bg-beige border-4 border-primary rounded-full">
-                      <GraduationCap size={16} className="text-primary" />
+                    {/* Connecting Vertical Line (draws precisely between badge centers) */}
+                    {index < education.length - 1 && (
+                      <div className="absolute left-[15px] top-[28px] bottom-[-24px] w-[2px] bg-sred/30 z-0"></div>
+                    )}
+
+                    {/* Centered Timeline Icon Badge aligned to the card title center */}
+                    <div className="absolute left-0 top-[22px] w-8 h-8 bg-beige border-2 border-primary rounded-full flex items-center justify-center z-10 shadow-sm">
+                      <GraduationCap size={14} className="text-primary" />
                     </div>
-                    {/* Education card with card-hover */}
-                    <div className="bg-secondary/10 rounded-xl p-6 border border-secondary/30 card-hover">
+
+                    <div className="bg-secondary/10 rounded-xl p-6 border border-about-ink/30 card-hover z-10 relative">
                       <h3 className="text-xl font-bold mb-1 text-foreground">
                         {edu.degree}
                       </h3>
@@ -332,8 +345,8 @@ export default function AboutMePage() {
           </div>
         </section>
 
-        {/* CTA Section - Applied card-hover to the banner */}
-        <section className="max-w-6xl mx-auto px-6">
+        {/* CTA Section */}
+        {/* <section className="max-w-6xl mx-auto px-6">
           <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-12 border border-secondary/30 text-center card-hover">
             <h2 className="text-3xl font-bold mb-4 text-foreground">
               Let's Create Something Amazing
@@ -349,7 +362,7 @@ export default function AboutMePage() {
               Get In Touch
             </a>
           </div>
-        </section>
+        </section> */}
       </main>
     </div>
   );

@@ -3,6 +3,28 @@ import Gallery, { type GalleryProject } from "./Gallery";
 // Digital Illustration project compilation data
 const projects: GalleryProject[] = [
   {
+    id: 2,
+    title: "Zine Deck",
+    category: "Digital Illustration",
+    description:
+      "A zine-style presentation exploring creative layouts and editorial design approaches.",
+    fullDescription:
+      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
+    images: [
+      "/projects/presentations/presentation1/p1.png",
+      "/projects/presentations/presentation1/p2.png",
+      "/projects/presentations/presentation1/p3.png",
+      "/projects/presentations/presentation1/p4.png",
+      "/projects/presentations/presentation1/p5.png",
+    ],
+    pdfUrl: "/projects/presentations/presentation1/zine.pdf",
+    tags: ["Presentation", "Zine", "Editorial Design"],
+    year: "2024",
+    tools: ["Canva"],
+    link: "#",
+    github: "#",
+  },
+  {
     id: 3,
     title: "Mock ads",
     category: "Digital Illustration",
@@ -71,51 +93,56 @@ export default function GraphicDesign() {
                   }`}
                 >
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">
+                    <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
                       {project.title}
                     </h1>
-                    <p className="text-lg text-muted-foreground">
-                      {project.description}
-                    </p>
                   </div>
 
                   <div className="border-t border-secondary/20 pt-4 space-y-4">
-                    <h2 className="text-xl font-bold text-foreground">
+                    <h2 className="text-2xl font-bold text-pred">
                       Project Overview
                     </h2>
-                    <p className="text-base text-foreground/90 leading-relaxed">
+                    <p className="text-base text-about-ink leading-relaxed">
                       {project.fullDescription}
                     </p>
                   </div>
 
-                  <div className="bg-secondary/10 p-5 rounded-xl border border-secondary/30 space-y-3 text-sm">
+                  <div className="bg-about-ink/10 p-5 rounded-xl border border-about-ink/30 space-y-3 text-sm">
+                    {/* <p className="flex items-center gap-3 text-foreground">
+                      <span className="font-semibold text-about-ink/80">Category:</span>{" "}
+                      <span className="text-sred font-medium">{project.category}</span>
+                    </p> */}
                     <p className="flex items-center gap-3 text-foreground">
-                      <span className="font-semibold">Category:</span>{" "}
-                      {project.category}
-                    </p>
-                    <p className="flex items-center gap-3 text-foreground">
-                      <span className="font-semibold">Year:</span> {project.year}
+                      <span className="font-semibold text-about-ink/80">
+                        Year:
+                      </span>{" "}
+                      <span className="text-sred font-medium">
+                        {project.year}
+                      </span>
                     </p>
                     <div className="pt-2 border-t border-secondary/20">
-                      <h3 className="text-foreground font-semibold mb-1">
+                      <h3 className="text-about-ink/80 font-semibold mb-1">
                         Tools Used:
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p className="text-about-ink/80">
                         {project.tools.join(", ")}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1 bg-secondary/20 text-accent rounded-full text-xs font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                  {/* <div className="space-y-2">
+                    <h3 className="text-lg font-bold text-sred">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-xs font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div> */}
                 </div>
 
                 {/* Visual Showcase Frame */}
@@ -137,12 +164,9 @@ export default function GraphicDesign() {
         return (
           <section key={project.id} className="max-w-6xl mx-auto px-6">
             <div className="mb-12">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
+              <h1 className="text-5xl text-pred md:text-6xl font-extrabold mb-4 leading-tight">
                 {project.title}
               </h1>
-              <p className="text-xl text-muted-foreground max-w-4xl">
-                {project.description}
-              </p>
             </div>
 
             <div className="mb-16">
@@ -151,32 +175,35 @@ export default function GraphicDesign() {
 
             <div className="grid lg:grid-cols-3 gap-10 mb-16">
               <div className="lg:col-span-2 space-y-6">
-                <h2 className="text-3xl font-bold text-foreground border-b border-secondary/20 pb-2">
+                <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
                   Project Overview
                 </h2>
-                <p className="text-lg text-foreground leading-relaxed">
+                <p className="text-lg text-about-ink leading-relaxed">
                   {project.fullDescription}
                 </p>
               </div>
 
               <div className="space-y-8">
-                <div className="bg-secondary/10 p-6 rounded-xl border border-secondary/30">
-                  <h3 className="text-2xl font-bold text-primary mb-4">
-                    Details
-                  </h3>
+                <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
+                  <h3 className="text-2xl font-bold text-sred mb-4">Details</h3>
                   <div className="space-y-3 text-sm">
+                    {/* <p className="flex items-center gap-3 text-foreground">
+                      <span className="font-semibold text-about-ink/80">Category:</span>{" "}
+                      <span className="text-sred font-medium">{project.category}</span>
+                    </p> */}
                     <p className="flex items-center gap-3 text-foreground">
-                      <span className="font-semibold">Category:</span>{" "}
-                      {project.category}
-                    </p>
-                    <p className="flex items-center gap-3 text-foreground">
-                      <span className="font-semibold">Year:</span> {project.year}
+                      <span className="font-semibold text-about-ink/80">
+                        Year:
+                      </span>{" "}
+                      <span className="text-sred font-medium">
+                        {project.year}
+                      </span>
                     </p>
                     <div className="pt-2 border-t border-secondary/20">
-                      <h4 className="text-foreground font-semibold mb-2">
+                      <h4 className="text-about-ink/80 font-semibold mb-2">
                         Tools Used:
                       </h4>
-                      <ul className="text-muted-foreground list-disc list-inside ml-2 space-y-1">
+                      <ul className="text-about-ink/80 list-disc list-inside ml-2 space-y-1">
                         {project.tools.map((tool) => (
                           <li key={tool}>{tool}</li>
                         ))}
@@ -185,19 +212,19 @@ export default function GraphicDesign() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h3 className="text-xl font-bold text-foreground">Tags</h3>
+                {/* <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-sred">Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-secondary/20 text-accent rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+                        className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </section>

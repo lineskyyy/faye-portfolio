@@ -72,18 +72,14 @@ export default function Branding() {
       {projects.map((project) => (
         <section key={project.id} className="max-w-6xl mx-auto px-6">
           <div className="mb-12">
-            {/* Category Tag - Prominent */}
-            {/* <span className="text-sm font-semibold text-accent uppercase tracking-widest border border-primary/50 px-3 py-1 rounded-full mb-3 inline-block">
-              {project.category}
-            </span> */}
             {/* Title */}
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
+            <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
               {project.title}
             </h1>
             {/* Short Description */}
-            <p className="text-xl text-muted-foreground max-w-4xl">
+            {/* <p className="text-xl text-about-ink max-w-4xl">
               {project.description}
-            </p>
+            </p> */}
           </div>
 
           {/* Gallery Showcase - 3D carousel of project images */}
@@ -95,10 +91,10 @@ export default function Branding() {
           <div className="grid lg:grid-cols-3 gap-10 mb-16">
             {/* Full Description & Context */}
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-3xl font-bold text-foreground border-b border-secondary/20 pb-2">
+              <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
                 Project Overview
               </h2>
-              <p className="text-lg text-foreground leading-relaxed">
+              <p className="text-lg text-about-ink leading-relaxed">
                 {project.fullDescription}
               </p>
             </div>
@@ -106,23 +102,24 @@ export default function Branding() {
             {/* Metadata & CTAs */}
             <div className="space-y-8">
               {/* Metadata Card */}
-              <div className="bg-secondary/10 p-6 rounded-xl border border-secondary/30">
-                <h3 className="text-2xl font-bold text-primary mb-4">
+              <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
+                <h3 className="text-2xl font-bold text-sred mb-4">
                   Details
                 </h3>
                 <div className="space-y-3 text-sm">
+                  {/* <p className="flex items-center gap-3 text-foreground">
+                    <span className="font-semibold text-about-ink/80">Category:</span>{" "}
+                    <span className="text-sred font-medium">{project.category}</span>
+                  </p> */}
                   <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold">Category:</span>{" "}
-                    {project.category}
-                  </p>
-                  <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold">Year:</span> {project.year}
+                    <span className="font-semibold text-about-ink/80">Year:</span>{" "}
+                    <span className="text-sred font-medium">{project.year}</span>
                   </p>
                   <div className="pt-2 border-t border-secondary/20">
-                    <h4 className="text-foreground font-semibold mb-2">
+                    <h4 className="text-about-ink/80 font-semibold mb-2">
                       Tools Used:
                     </h4>
-                    <ul className="text-muted-foreground list-disc list-inside ml-2 space-y-1">
+                    <ul className="text-about-ink/80 list-disc list-inside ml-2 space-y-1">
                       {project.tools.map((tool) => (
                         <li key={tool}>{tool}</li>
                       ))}
@@ -132,19 +129,19 @@ export default function Branding() {
               </div>
 
               {/* Tags Section */}
-              <div className="space-y-3">
-                <h3 className="text-xl font-bold text-foreground">Tags</h3>
+              {/* <div className="space-y-3">
+                <h3 className="text-xl font-bold text-sred">Tags</h3>
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-secondary/20 text-accent rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+                      className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>

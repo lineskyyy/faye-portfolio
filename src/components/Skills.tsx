@@ -1,133 +1,255 @@
-import { useState } from "react";
+import type { CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useScrollAnimation } from "../hooks/useScrollAnimation";
+import { useScrollRevealProgress } from "../hooks/useScrollRevealProgress";
 
-const skills = [
-  { name: "Adobe Illustrator", icon: "/public/images/ai.png" }, 
+type Skill = {
+  name: string;
+  icon: string;
+};
+
+const skills: Skill[] = [
+  { name: "Adobe Illustrator", icon: "/public/images/ai.png" },
   { name: "Adobe Lightroom", icon: "/public/images/al.png" },
-  { name: "Adobe Photoshop", icon: "/public/images/ap.png" }, // Fixed typo "Aobe" to "Adobe"
+  { name: "Adobe Photoshop", icon: "/public/images/ap.png" },
   { name: "Adobe Premiere", icon: "/public/images/pr.png" },
   { name: "Canva", icon: "/public/images/canva.png" },
   { name: "Clip Studio Paint", icon: "/public/images/csp.png" },
 ];
 
-export default function Skills() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+const LOOP_SPEED = 100;
+function isImagePath(iconPath: string) {
+  return (
+    iconPath.startsWith("/") ||
+    iconPath.startsWith("http") ||
+    iconPath.includes(".")
+  );
+}
 
-  const scrollContainerPadding = "px-6 md:px-32";
+function getWrappedOffset(offset: number, sequenceWidth: number) {
+  return ((offset % sequenceWidth) + sequenceWidth) % sequenceWidth;
+}
 
-  // Helper function to check if the icon string is a URL/path or just an emoji/text
-  const isImagePath = (iconPath: string) => {
-    return iconPath.startsWith("/") || iconPath.startsWith("http") || iconPath.includes(".");
-  };
+type SkillItemProps = {
+  skill: Skill;
+  isHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+};
+
+function SkillItem({
+  skill,
+  isHovered,
+  onMouseEnter,
+  onMouseLeave,
+}: SkillItemProps) {
+  const renderIcon = (isReflection = false) =>
+    isImagePath(skill.icon) ? (
+      <img
+        src={skill.icon}
+        alt={isReflection ? `${skill.name} reflection` : skill.name}
+        aria-hidden={isReflection}
+        draggable={false}
+        className="w-40 h-40 object-contain select-none"
+      />
+    ) : (
+      <span aria-hidden={isReflection} className="select-none">
+        {skill.icon}
+      </span>
+    );
 
   return (
-    <section id="skills" className="pt-32 px-6 md:px-16 relative">
-      <div className="container mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
-          <span className="text-sred">Tools</span> &{" "}
-          <span className="text-foreground">Technologies</span>
-        </h2> 
+    <li
+      className="relative flex h-20 w-20 shrink-0 items-center justify-center"
+      role="listitem"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div
+        className={`absolute -top-12 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-lg border border-tred bg-pred px-4 py-2 text-sm font-semibold text-foreground shadow-[0_0_20px_rgba(20,184,166,0.4)] backdrop-blur-md transition-all duration-200 ${
+          isHovered
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+        role="status"
+        aria-live="polite"
+      >
+        {skill.name}
+      </div>
 
-        {/* Desktop marquee (md+) */}
-        <div className="hidden md:relative md:block h-auto pt-12 pb-24 overflow-hidden">
-          <div className={`flex gap-12 animate-scroll ${scrollContainerPadding} z-10`}>
-            {[...skills, ...skills].map((skill, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 relative group"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                {/* Tooltip */}
-                <div
-                  className={`absolute -top-12 left-1/2 -translate-x-1/2 bg-pred backdrop-blur-md text-foreground px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap z-20 border border-tred shadow-[0_0_20px_rgba(20,184,166,0.4)] transition-all duration-300 ${
-                    hoveredIndex === index
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-2 pointer-events-none"
-                  }`}
-                >
-                  {skill.name}
-                </div>
+      <div className="relative flex h-20 w-20 cursor-pointer items-center justify-center text-5xl transition-transform duration-300 ease-out hover:scale-125">
+        <div className="absolute inset-0 rounded-xl border border-accent/20 bg-accent/10 opacity-0 shadow-[0_0_25px_rgba(20,184,166,0.3)] backdrop-blur-sm transition-opacity duration-300 hover:opacity-100" />
+        <div className="relative z-10">{renderIcon()}</div>
+      </div>
 
-                {/* Icon container with hover glow */}
-                <div className="w-20 h-20 flex items-center justify-center text-5xl relative cursor-pointer transition-transform duration-300 ease-out group-hover:scale-125">
-                  <div className="absolute inset-0 bg-accent/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-accent/20 shadow-[0_0_25px_rgba(20,184,166,0.3)]" />
+      <div
+        className="pointer-events-none absolute left-0 top-[86px] flex h-20 w-20 items-center justify-center text-5xl opacity-40 select-none"
+        aria-hidden="true"
+        style={{
+          transform: "scaleY(-1)",
+          maskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 80%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 80%)",
+        }}
+      >
+        {renderIcon(true)}
+      </div>
+    </li>
+  );
+}
 
-                  {isImagePath(skill.icon) ? (
-                    <img
-                      src={skill.icon}
-                      alt={skill.name}
-                      className="w-12 h-12 relative z-10 select-none object-contain"
-                    />
-                  ) : (
-                    <span className="relative z-10 select-none">
-                      {skill.icon}
-                    </span>
-                  )}
-                </div>
+export default function Skills() {
+  const { ref, isVisible } = useScrollAnimation();
+  const { progress, reduceMotion } = useScrollRevealProgress("skills");
 
-                {/* Reflection */}
-                <div
-                  className="absolute left-0 w-20 h-20 flex items-center justify-center text-5xl opacity-40 pointer-events-none select-none"
-                  style={{
-                    top: "calc(100% + 6px)",
-                    transform: "scaleY(-1)",
-                    maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 80%)",
-                    WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 80%)",
-                  }}
-                >
-                  {isImagePath(skill.icon) ? (
-                    <img
-                      src={skill.icon}
-                      alt={`${skill.name} reflection`}
-                      className="w-12 h-12 object-contain"
-                    />
-                  ) : (
-                    <span>{skill.icon}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+  const skillsRevealStyle: CSSProperties | undefined = reduceMotion
+    ? undefined
+    : {
+        opacity: 0.78 + progress * 0.22,
+        transform: `translate3d(0, ${(1 - progress) * 60}px, 0) scale(${0.965 + progress * 0.035})`,
+        transformOrigin: "center top",
+        willChange: "opacity, transform",
+      };
+
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const sequenceRef = useRef<HTMLUListElement>(null);
+  const offsetRef = useRef(0);
+  const [sequenceWidth, setSequenceWidth] = useState(0);
+  const [copyCount, setCopyCount] = useState(2);
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+
+  const measureLoop = useCallback(() => {
+    const viewportWidth = viewportRef.current?.clientWidth ?? 0;
+    const measuredWidth = sequenceRef.current?.getBoundingClientRect().width ?? 0;
+
+    if (measuredWidth > 0) {
+      const nextSequenceWidth = Math.ceil(measuredWidth);
+      setSequenceWidth(nextSequenceWidth);
+      setCopyCount(
+        Math.max(2, Math.ceil(viewportWidth / nextSequenceWidth) + 2),
+      );
+      offsetRef.current = getWrappedOffset(
+        offsetRef.current,
+        nextSequenceWidth,
+      );
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    measureLoop();
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measureLoop)
+        : null;
+
+    if (resizeObserver) {
+      if (viewportRef.current) resizeObserver.observe(viewportRef.current);
+      if (sequenceRef.current) resizeObserver.observe(sequenceRef.current);
+    } else {
+      window.addEventListener("resize", measureLoop);
+    }
+
+    const images = sequenceRef.current?.querySelectorAll("img") ?? [];
+    images.forEach((image) => {
+      image.addEventListener("load", measureLoop, { once: true });
+      image.addEventListener("error", measureLoop, { once: true });
+    });
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", measureLoop);
+      images.forEach((image) => {
+        image.removeEventListener("load", measureLoop);
+        image.removeEventListener("error", measureLoop);
+      });
+    };
+  }, [measureLoop, copyCount]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || sequenceWidth <= 0) return;
+
+    let animationFrame = 0;
+    let lastTimestamp: number | null = null;
+    let velocity = 0;
+
+    const animate = (timestamp: number) => {
+      if (lastTimestamp === null) lastTimestamp = timestamp;
+
+      const deltaTime = Math.max(0, timestamp - lastTimestamp) / 1000;
+      lastTimestamp = timestamp;
+
+      const targetVelocity = reduceMotion || hoveredKey ? 0 : LOOP_SPEED;
+      const easingFactor = 1 - Math.exp(-deltaTime / 0.25);
+      velocity += (targetVelocity - velocity) * easingFactor;
+
+      offsetRef.current = getWrappedOffset(
+        offsetRef.current + velocity * deltaTime,
+        sequenceWidth,
+      );
+      track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`;
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      lastTimestamp = null;
+    };
+  }, [sequenceWidth, hoveredKey, reduceMotion]);
+
+  return (
+    <section ref={ref} id="skills" className="relative px-6 pt-32 md:px-16">
+      <div className="container mx-auto" style={skillsRevealStyle}>
+        <div
+          className={`mb-16 text-center ${
+            reduceMotion ? "opacity-100" : isVisible ? "fade-up" : "opacity-0"
+          }`}
+        >
+          <h2 className="text-4xl font-bold md:text-5xl">
+            <span className="text-sred">Tools</span> &{" "}
+            <span className="text-foreground">Technologies</span>
+          </h2>
         </div>
 
-        {/* Mobile marquee */}
-        <div className="md:hidden relative h-auto pt-8 pb-12 overflow-hidden">
-          <div className={`flex gap-6 animate-scroll ${scrollContainerPadding} z-10`}>
-            {[...skills, ...skills].map((skill, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-28 relative group"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
+        <div
+          ref={viewportRef}
+          className={`relative overflow-hidden pb-24 pt-12 transition-opacity duration-500 ${
+            reduceMotion ? "opacity-100" : isVisible ? "fade-up opacity-100" : "opacity-0"
+          }`}
+          role="region"
+          aria-label="Tools and technologies"
+        >
+          <div
+            ref={trackRef}
+            className="flex w-max select-none gap-20 will-change-transform"
+          >
+            {Array.from({ length: copyCount }, (_, copyIndex) => (
+              <ul
+                key={`skills-copy-${copyIndex}`}
+                ref={copyIndex === 0 ? sequenceRef : undefined}
+                className="flex shrink-0 items-center gap-6 pr-6 md:gap-30 md:pr-12"
+                role="list"
+                aria-hidden={copyIndex > 0}
               >
-                {/* Tooltip */}
-                <div
-                  className={`absolute -top-12 left-1/2 -translate-x-1/2 bg-pred backdrop-blur-md text-foreground px-3 py-1.5 rounded-md text-xs font-semibold whitespace-nowrap z-20 border border-primary/30 shadow-[0_0_16px_rgba(20,184,166,0.35)] transition-all duration-300 ${
-                    hoveredIndex === index
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-2 pointer-events-none"
-                  }`}
-                >
-                  {skill.name}
-                </div>
-
-                {/* Icon container */}
-                <div className="w-20 h-20 flex items-center justify-center text-4xl relative cursor-pointer transition-transform duration-300 ease-out group-hover:scale-110 mx-auto">
-                  <div className="absolute inset-0 bg-accent/10 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-accent/20" />
-                  
-                  {isImagePath(skill.icon) ? (
-                    <img
-                      src={skill.icon}
-                      alt={skill.name}
-                      className="w-12 h-12 relative z-10 select-none object-contain"
+                {skills.map((skill, skillIndex) => {
+                  const itemKey = `${copyIndex}-${skillIndex}`;
+                  return (
+                    <SkillItem
+                      key={itemKey}
+                      skill={skill}
+                      isHovered={hoveredKey === itemKey}
+                      onMouseEnter={() => setHoveredKey(itemKey)}
+                      onMouseLeave={() => setHoveredKey(null)}
                     />
-                  ) : (
-                    <span className="relative z-10 select-none">
-                      {skill.icon}
-                    </span>
-                  )}
-                </div>
-              </div>
+                  );
+                })}
+              </ul>
             ))}
           </div>
         </div>

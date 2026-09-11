@@ -79,7 +79,7 @@ export default function FloatingElements() {
           }}
         >
           <img
-            src="/images/bubbles.png"
+            src="/images/bub.png"
             alt=""
             className="h-full w-full select-none object-contain"
             style={{

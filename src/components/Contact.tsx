@@ -14,7 +14,7 @@ export default function Contact() {
   ]
 
   return (
-    <section ref={ref} id="contact" className="py-20 px-6">
+    <section ref={ref} id="contact" className="mt-30 px-6">
       <div className="max-w-4xl mx-auto text-center">
         {/* Section Header */}
         <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${isVisible ? "fade-up" : "opacity-0"}`}>
@@ -39,7 +39,7 @@ export default function Contact() {
         </a>
 
         {/* Social Icons - Enhanced hover effect: primary background and scale */}
-        <div className={`flex justify-center gap-6 ${isVisible ? "fade-up fade-up-delay-3" : "opacity-0"}`}>
+        {/* <div className={`flex justify-center gap-6 ${isVisible ? "fade-up fade-up-delay-3" : "opacity-0"}`}>
           {socialLinks.map((social) => {
             const Icon = social.icon
             return (
@@ -54,15 +54,15 @@ export default function Contact() {
               </a>
             )
           })}
-        </div>
+        </div> */}
 
         {/* Footer/Copyright */}
-        <div className="mt-20 border-t border-secondary/20 pt-8">
+        {/* <div className="mt-20 border-t border-secondary/20 pt-8">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} SNGM Portfolio. Crafted with{" "}
             <span className="text-sred">Peasant Boy</span>.
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   )

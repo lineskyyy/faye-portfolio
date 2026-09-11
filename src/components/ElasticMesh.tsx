@@ -199,8 +199,17 @@ const ElasticMesh = ({
     if (!container) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isLowPowerDevice =
+      typeof navigator !== 'undefined' &&
+      typeof navigator.hardwareConcurrency === 'number' &&
+      navigator.hardwareConcurrency <= 4;
+    const frameInterval = isLowPowerDevice ? 1000 / 30 : 1000 / 45;
 
-    const renderer = new Renderer({ alpha: true, antialias: true, dpr: Math.min(window.devicePixelRatio || 1, 2) });
+    const renderer = new Renderer({
+      alpha: true,
+      antialias: false,
+      dpr: Math.min(window.devicePixelRatio || 1, isLowPowerDevice ? 1 : 1.25),
+    });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
@@ -547,8 +556,11 @@ const ElasticMesh = ({
     }
 
     let raf = 0;
+    let lastFrame = 0;
     function frame(now: number) {
       raf = requestAnimationFrame(frame);
+      if (!reduceMotion && now - lastFrame < frameInterval) return;
+      lastFrame = now;
       const p = propsRef.current;
 
       program.uniforms.uShading.value = p.shading;
