@@ -3,7 +3,7 @@ import Navigation from "../components/Navigation";
 import FloatingElements from "../components/FloatingElements";
 import { ArrowLeft, Palette, Presentation, Briefcase, Layout } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import DigitalIllustration from "../components/DigitalIllustration";
 import Presentations from "../components/Presentations";
 import Branding from "../components/Branding";
@@ -20,18 +20,18 @@ const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
 ];
 
 export default function ProjectPage() {
-  const [scrollY, setScrollY] = useState(0);
+  // const [scrollY, setScrollY] = useState(0);
   const [activeTab, setActiveTab] = useState<TabKey>("illustrations");
   const [pendingTab, setPendingTab] = useState<TabKey | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => setScrollY(window.scrollY);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab") as TabKey | null;
@@ -59,7 +59,7 @@ export default function ProjectPage() {
     ? TABS.find((t) => t.key === pendingTab)?.label ?? ""
     : TABS.find((t) => t.key === activeTab)?.label ?? "";
 
-  const currentTabLabel = TABS.find((t) => t.key === activeTab)?.label ?? "";
+  // const currentTabLabel = TABS.find((t) => t.key === activeTab)?.label ?? "";
 
   const renderTabContent = () => {
     switch (activeTab) {

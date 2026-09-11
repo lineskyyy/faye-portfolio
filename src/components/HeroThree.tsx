@@ -7,8 +7,8 @@ const BUTTON_HOVER_CLASSES =
 const TRANSITION_CLASSES =
   "transition-[transform,background-color,color] duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.98]";
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(Math.max(value, min), max);
+// const clamp = (value: number, min: number, max: number) =>
+//   Math.min(Math.max(value, min), max);
 
 export default function HeroThree() {
   const heroRef = useRef<HTMLElement>(null);

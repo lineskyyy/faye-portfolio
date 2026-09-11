@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
+// import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
 
 const BUTTON_HOVER_CLASSES =
   "transition-[transform,box-shadow,background-color] duration-200 ease-out shadow-lg hover:shadow-[#fe497b]/60 hover:-translate-y-0.5 active:scale-[0.98]";
@@ -7,13 +7,13 @@ const BUTTON_HOVER_CLASSES =
 const TRANSITION_CLASSES =
   "transition-[transform,background-color,color] duration-200 ease-out hover:-translate-y-0.5 active:scale-[0.98]";
 
-const SHADER_CANVAS_STYLE: CSSProperties = {
-  position: "absolute",
-  inset: 0,
-  width: "100%",
-  height: "100%",
-  pointerEvents: "none",
-};
+// const SHADER_CANVAS_STYLE: CSSProperties = {
+//   position: "absolute",
+//   inset: 0,
+//   width: "100%",
+//   height: "100%",
+//   pointerEvents: "none",
+// };
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);

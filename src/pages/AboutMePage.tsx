@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import FloatingElements from "../components/FloatingElements";
 import { ArrowLeft, Briefcase, GraduationCap, Quote } from "lucide-react";
@@ -26,15 +26,15 @@ interface Education {
 }
 
 export default function AboutMePage() {
-  const [scrollY, setScrollY] = useState(0);
+  // const [scrollY, setScrollY] = useState(0);
   const navigate = useNavigate();
   const { ref: mainRef, isVisible: mainVisible } = useScrollAnimation();
 
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => setScrollY(window.scrollY);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   const skills: SkillGroup[] = [
     {

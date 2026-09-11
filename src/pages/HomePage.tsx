@@ -6,7 +6,7 @@ import Projects from "../components/Projects";
 import Skills from "../components/Skills";
 import Contact from "../components/Contact";
 import FloatingElements from "../components/FloatingElements";
-import HeroFive from "../components/HeroFive";
+// import HeroFive from "../components/HeroFive";
 import HeroSix from "../components/HeroSix";
 // import { useState, useEffect } from "react";
 // import HeroTwo from "../components/HeroTwo"

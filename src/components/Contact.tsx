@@ -1,4 +1,4 @@
-import { Mail, Linkedin, Instagram, Github } from "lucide-react"
+// import { Mail, Linkedin, Instagram, Github } from "lucide-react"
 import { useScrollAnimation } from "../hooks/useScrollAnimation"
 
 const BUTTON_HOVER_CLASSES =
@@ -6,12 +6,12 @@ const BUTTON_HOVER_CLASSES =
 export default function Contact() {
   const { ref, isVisible } = useScrollAnimation()
 
-  const socialLinks = [
-    { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Github, href: "#", label: "GitHub" },
-  ]
+  // const socialLinks = [
+  //   { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
+  //   { icon: Linkedin, href: "#", label: "LinkedIn" },
+  //   { icon: Instagram, href: "#", label: "Instagram" },
+  //   { icon: Github, href: "#", label: "GitHub" },
+  // ]
 
   return (
     <section ref={ref} id="contact" className="mt-30 px-6">
