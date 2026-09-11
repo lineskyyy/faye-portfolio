@@ -97,7 +97,7 @@ export default function Navigation() {
           } ${TRANSITION_CLASSES}`}
         >
           <img
-            src="/public/images/logow.png"
+            src="/images/logow.png"
             alt="SNGM logo"
             className="h-10 w-10 sm:h-12 sm:w-12 object-contain"
           />

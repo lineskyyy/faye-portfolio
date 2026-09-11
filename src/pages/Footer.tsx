@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Left Column: Brand Icon, Description & Social Icons */}
           <div className="max-w-md space-y-5">
             <img
-              src="/public/images/logob.png"
+              src="/images/logob.png"
               alt="Logo"
               className="h-14 w-14 object-contain"
             />
@@ -164,7 +164,7 @@ export default function Footer() {
           <div className="w-full max-w-[280px] sm:max-w-xl md:max-w-3xl lg:max-w-5xl aspect-[896/294]">
             <Link to="/about" className="block h-full w-full cursor-pointer">
               <ElasticMesh
-                image="/public/images/hero2.png"
+                image="/images/hero2.png"
                 className="h-full w-full object-bottom"
                 showGrid={false}
                 borderRadius={0}
