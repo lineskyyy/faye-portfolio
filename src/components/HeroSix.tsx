@@ -341,11 +341,10 @@ export default function HeroSix() {
     const updateScrollProgress = () => {
       scrollFrame = 0;
       const progress = window.scrollY > 0 ? 1 : 0;
-      const edgeSpace = 8 * (1 - progress);
-      sectionRef.current?.style.setProperty("padding", `${edgeSpace}px`);
-      shellRef.current?.style.setProperty("min-height", `calc(100vh - ${edgeSpace * 2}px)`);
-      shellRef.current?.style.setProperty("border-radius", `${32 * (1 - progress)}px`);
-      contentRef.current?.style.setProperty("min-height", `calc(100vh - ${edgeSpace * 2}px)`);
+      // Keep the 3D scene's containing box stable. Resizing a perspective
+      // scene while its children are being animated makes Chromium repeatedly
+      // rebuild the composited layers, which appears as flashing on scroll.
+      // Only move the foreground content after the hero has started scrolling.
       contentRef.current?.style.setProperty("transform", `translate3d(0, ${progress * -10}px, 0)`);
     };
     const handleScroll = () => {
