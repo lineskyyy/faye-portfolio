@@ -24,11 +24,7 @@ const baseImages = [
 ];
 
 const walls = ["left", "right", "top", "bottom"] as const;
-
-function pseudoRandom(seed: number) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
+const wallCrossOffsets = [30, 50, 70] as const;
 
 function TunnelArtwork() {
   const [isPaused, setIsPaused] = useState(false);
@@ -41,8 +37,8 @@ function TunnelArtwork() {
 
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
 
-  const TOTAL_ITEMS = 32;
-  const TUNNEL_DEPTH = 3600;
+  const TOTAL_ITEMS = baseImages.length;
+  const TUNNEL_DEPTH = 3000;
 
   useEffect(() => {
     const checkMobile = () => {
@@ -55,27 +51,29 @@ function TunnelArtwork() {
 
   const items = useMemo(() => {
     return Array.from({ length: TOTAL_ITEMS }).map((_, i) => {
-      const seed = i * 13.37 + 1;
-      const imageIndex = Math.floor(pseudoRandom(seed) * baseImages.length);
-      const wall = walls[Math.floor(pseudoRandom(seed + 1) * walls.length)];
+      const wall = walls[i % walls.length];
 
       const isHorizontal = wall === "top" || wall === "bottom";
 
-      // Uniform card proportions relative to viewport orientation
+      // The image is a plane on the wall, not a free-floating card. Keep its
+      // cross-wall dimension responsive so it cannot spill outside the tunnel
+      // at small heights or widths. For side walls, width runs down the
+      // tunnel's depth; for top/bottom walls, width runs across the tunnel.
       const width = isHorizontal
-        ? isMobile ? 220 : 440
-        : isMobile ? 160 : 320;
+        ? "clamp(240px, 44vw, 560px)"
+        : "clamp(180px, 34vw, 460px)";
       const height = isHorizontal
-        ? isMobile ? 140 : 280
-        : isMobile ? 240 : 480;
+        ? "clamp(180px, 38vh, 460px)"
+        : "clamp(220px, 40vh, 460px)";
 
       // Restrict position range to prevent edge overflow
-      const crossOffset = 15 + pseudoRandom(seed + 2) * 70;
-      const z = -(pseudoRandom(seed + 3) * TUNNEL_DEPTH);
+      const depthIndex = Math.floor(i / walls.length);
+      const crossOffset = wallCrossOffsets[depthIndex % wallCrossOffsets.length];
+      const z = -(180 + depthIndex * 720);
 
       return {
         id: i,
-        src: baseImages[imageIndex],
+        src: baseImages[i],
         wall,
         crossOffset,
         z,
@@ -152,11 +150,13 @@ function TunnelArtwork() {
 
     const baseStyle: CSSProperties = {
       position: "absolute",
-      width: `${item.width}px`,
-      height: `${item.height}px`,
+      width: item.width,
+      height: item.height,
       willChange: "transform, opacity",
       opacity,
       pointerEvents: "none",
+      transformStyle: "preserve-3d",
+      backfaceVisibility: "hidden",
     };
 
     // Cleaned-up 3D rotations ensuring top/bottom planes lie flat along the tunnel axis
@@ -167,6 +167,7 @@ function TunnelArtwork() {
           top: `${item.crossOffset}%`,
           left: 0,
           transformOrigin: "0% 50%",
+          // The left wall faces toward +X, into the tunnel.
           transform: `translate3d(0, -50%, ${wrappedZ}px) rotateY(90deg)`,
         };
       case "right":
@@ -175,6 +176,7 @@ function TunnelArtwork() {
           top: `${item.crossOffset}%`,
           right: 0,
           transformOrigin: "100% 50%",
+          // The right wall faces toward -X, into the tunnel.
           transform: `translate3d(0, -50%, ${wrappedZ}px) rotateY(-90deg)`,
         };
       case "top":
@@ -322,18 +324,13 @@ export default function HeroSix() {
   const [isVisible, setIsVisible] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateMotionPreference = () => {
-      setPrefersReducedMotion(motionQuery.matches);
-      if (motionQuery.matches) {
-        setIsLoaded(true);
-        setIsVisible(true);
-      }
-    };
-
+    const updateMotionPreference = () => setPrefersReducedMotion(motionQuery.matches);
     updateMotionPreference();
     const loadFrame = requestAnimationFrame(() => {
       setIsLoaded(true);
@@ -343,11 +340,16 @@ export default function HeroSix() {
     let scrollFrame = 0;
     const updateScrollProgress = () => {
       scrollFrame = 0;
-      setScrollProgress(window.scrollY > 0 ? 1 : 0);
+      const progress = window.scrollY > 0 ? 1 : 0;
+      const edgeSpace = 8 * (1 - progress);
+      sectionRef.current?.style.setProperty("padding", `${edgeSpace}px`);
+      shellRef.current?.style.setProperty("min-height", `calc(100vh - ${edgeSpace * 2}px)`);
+      shellRef.current?.style.setProperty("border-radius", `${32 * (1 - progress)}px`);
+      contentRef.current?.style.setProperty("min-height", `calc(100vh - ${edgeSpace * 2}px)`);
+      contentRef.current?.style.setProperty("transform", `translate3d(0, ${progress * -10}px, 0)`);
     };
     const handleScroll = () => {
-      if (!scrollFrame)
-        scrollFrame = requestAnimationFrame(updateScrollProgress);
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollProgress);
     };
 
     updateScrollProgress();
@@ -361,48 +363,26 @@ export default function HeroSix() {
     };
   }, []);
 
-  const edgeSpace = 8 * (1 - scrollProgress);
-  const heroHeight = `calc(100vh - ${edgeSpace * 2}px)`;
-  const radius = Math.round(32 * (1 - scrollProgress));
-  const sectionStyle: CSSProperties = {
-    padding: `${edgeSpace}px`,
-    transition: prefersReducedMotion
-      ? "none"
-      : "padding 360ms cubic-bezier(0.23, 1, 0.32, 1)",
-  };
-  const shellStyle: CSSProperties = {
-    minHeight: heroHeight,
-    borderRadius: `${radius}px`,
-    opacity: isLoaded ? 1 : 0,
-    transition: prefersReducedMotion
-      ? "none"
-      : "border-radius 260ms cubic-bezier(0.23, 1, 0.32, 1), opacity 520ms cubic-bezier(0.23, 1, 0.32, 1)",
-  };
-  const contentStyle: CSSProperties = {
-    minHeight: heroHeight,
-    transform: prefersReducedMotion
-      ? "none"
-      : `translate3d(0, ${scrollProgress * -10}px, 0)`,
-    transition: prefersReducedMotion
-      ? "none"
-      : "transform 260ms cubic-bezier(0.23, 1, 0.32, 1)",
-  };
+  const transition = prefersReducedMotion ? "none" : undefined;
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
-      className="relative z-10 min-h-screen w-full overflow-hidden bg-[#f1e2d1]"
-      style={sectionStyle}
+      className="relative z-10 min-h-screen w-full overflow-hidden bg-[#f1e2d1] transition-[padding] duration-300 ease-out"
+      style={{ padding: "8px", transition }}
     >
       <div
-        className="relative isolate z-10 flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#1e5247] to-[#9cb080]"
-        style={shellStyle}
+        ref={shellRef}
+        className="relative isolate z-10 flex w-full items-center justify-center overflow-hidden bg-gradient-to-b from-[#1e5247] to-[#9cb080] transition-[border-radius,min-height,opacity] duration-300 ease-out"
+        style={{ minHeight: "calc(100vh - 16px)", borderRadius: "32px", opacity: isLoaded ? 1 : 0, transition }}
       >
         <TunnelArtwork />
 
         <div
-          className="relative z-40 flex h-full min-h-[inherit] w-full flex-col items-center justify-between px-4 pb-16 pt-32 sm:pt-24 text-center sm:justify-center sm:py-8 sm:px-6 lg:px-8 pointer-events-none"
-          style={contentStyle}
+          ref={contentRef}
+          className="relative z-40 flex h-full min-h-[inherit] w-full flex-col items-center justify-between px-4 pb-16 pt-32 text-center transition-transform duration-300 ease-out sm:justify-center sm:py-8 sm:px-6 sm:pt-24 lg:px-8 pointer-events-none"
+          style={{ minHeight: "calc(100vh - 16px)", transition }}
         >
           <div className="flex flex-col items-center justify-center sm:mb-0">
             <div
