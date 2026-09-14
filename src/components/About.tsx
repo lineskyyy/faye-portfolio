@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 import {
@@ -76,37 +75,6 @@ export default function About() {
   const { progress: aboutTransitionProgress, reduceMotion } =
     useScrollRevealProgress("work");
   const { progress: wordProgress } = useScrollWordProgress("about");
-  const idFrameRef = useRef<HTMLDivElement>(null);
-  const aboutButtonRef = useRef<HTMLAnchorElement>(null);
-  const [aboutButtonTop, setAboutButtonTop] = useState<number | null>(null);
-
-  useEffect(() => {
-    const measureButtonPosition = () => {
-      const idFrame = idFrameRef.current;
-      const button = aboutButtonRef.current;
-      if (!button) return;
-
-      // On mobile screens where the ID frame is hidden (offsetParent or dimensions are 0),
-      // place the button directly beneath the text content.
-      if (!idFrame || idFrame.offsetWidth === 0 || idFrame.offsetHeight === 0) {
-        setAboutButtonTop(null);
-        return;
-      }
-
-      setAboutButtonTop(idFrame.offsetTop + idFrame.offsetHeight - button.offsetHeight);
-    };
-
-    measureButtonPosition();
-    window.addEventListener("resize", measureButtonPosition);
-    const resizeObserver = new ResizeObserver(measureButtonPosition);
-    if (idFrameRef.current) resizeObserver.observe(idFrameRef.current);
-    if (aboutButtonRef.current) resizeObserver.observe(aboutButtonRef.current);
-
-    return () => {
-      window.removeEventListener("resize", measureButtonPosition);
-      resizeObserver.disconnect();
-    };
-  }, []);
 
   const mainHighlightProgress = reduceMotion
     ? 1
@@ -157,7 +125,7 @@ export default function About() {
       id="about"
       className={`relative mt-15 px-6 pt-15 ${reduceMotion ? "" : "min-h-[190vh]"}`}
     >
-      {/* The sticky frame keeps the section pinned for scroll progress */}
+      {/* Sticky container pins the section while scrolling through state updates */}
       <div
         className={
           reduceMotion
@@ -166,7 +134,7 @@ export default function About() {
         }
       >
         <div
-          className="relative mx-auto w-full max-w-6xl"
+          className="relative mt-20 mx-auto w-full max-w-6xl"
           style={aboutRevealStyle}
         >
           <div className="grid items-start gap-12 md:grid-cols-2">
@@ -183,12 +151,12 @@ export default function About() {
               <div
                 className={`${reduceMotion ? "opacity-100" : isVisible ? "fade-up fade-up-delay-1" : "opacity-0"}`}
               >
-                {/* Both paragraphs share one grid cell so the crossfade does not change layout height. */}
+                {/* Both paragraphs share one grid cell so the crossfade does not change layout height */}
                 <div className="grid items-start">
                   <HighlightedParagraph
                     words={mainParagraphWords}
                     progress={mainHighlightProgress}
-                    className="col-start-1 row-start-1 font-body text-justify text-[24px] md:text-[30px] font-medium leading-[1.15] tracking-[-0.025em]"
+                    className="col-start-1 row-start-1 font-body text-justify text-[20px] md:text-[24px] lg:text-[30px] font-medium leading-[1.15] tracking-[-0.025em]"
                     ariaLabel={mainParagraph}
                     ariaHidden={!reduceMotion && paragraphCrossfadeProgress >= 1}
                     style={
@@ -207,7 +175,7 @@ export default function About() {
                   <HighlightedParagraph
                     words={secondParagraphWords}
                     progress={secondHighlightProgress}
-                    className="col-start-1 row-start-1 font-body text-justify text-[24px] md:text-[30px] font-medium leading-[1.35] tracking-[-0.015em]"
+                    className="col-start-1 row-start-1 font-body text-justify text-[20px] md:text-[24px] lg:text-[30px] font-medium leading-[1.35] tracking-[-0.015em]"
                     ariaLabel={secondParagraph}
                     ariaHidden={!reduceMotion && paragraphCrossfadeProgress < 1}
                     style={
@@ -222,15 +190,25 @@ export default function About() {
                     }
                   />
                 </div>
+
+                {/* Button always present directly under the text */}
+                <div className="mt-8">
+                  <Link
+                    to="/about"
+                    className="inline-flex items-center gap-3 rounded-full border border-sred/70 px-5 py-3 font-body text-sm font-semibold tracking-wide text-sred transition-colors duration-200 hover:border-tred hover:text-tred focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tred focus-visible:ring-offset-4 focus-visible:ring-offset-beige"
+                  >
+                    <span>Know more about me</span>
+                    <span aria-hidden="true" className="text-lg leading-none">
+                      →
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Hidden on mobile, flexed on md screens and up */}
             <div className="hidden justify-center opacity-100 md:flex">
-              <div
-                ref={idFrameRef}
-                className="w-full max-w-md overflow-hidden"
-              >
+              <div className="w-full max-w-md overflow-hidden">
                 <img
                   src="/images/id.png"
                   alt="Multimedia Artist Profile"
@@ -238,33 +216,6 @@ export default function About() {
                   style={idStyle}
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Button placement wrapper: on desktop uses absolute positioning aligned to ID, on mobile falls back inline */}
-          <div
-            className={
-              aboutButtonTop === null
-                ? "mt-8"
-                : "pointer-events-none absolute inset-x-0"
-            }
-            style={
-              aboutButtonTop !== null
-                ? { top: aboutButtonTop }
-                : undefined
-            }
-          >
-            <div className="mx-auto w-full max-w-6xl">
-              <Link
-                ref={aboutButtonRef}
-                to="/about"
-                className="pointer-events-auto inline-flex items-center gap-3 rounded-full border border-sred/70 px-5 py-3 font-body text-sm font-semibold tracking-wide text-sred transition-colors duration-200 hover:border-tred hover:text-tred focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tred focus-visible:ring-offset-4 focus-visible:ring-offset-beige"
-              >
-                <span>Know more about me</span>
-                <span aria-hidden="true" className="text-lg leading-none">
-                  →
-                </span>
-              </Link>
             </div>
           </div>
         </div>

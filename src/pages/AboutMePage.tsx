@@ -121,7 +121,7 @@ export default function AboutMePage() {
         <div className="max-w-6xl mx-auto px-6 mb-12">
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-secondary hover:text-primary smooth-transition mb-8 font-semibold"
+            className="flex items-center gap-2 text-primary hover:underline hover:font-bold smooth-transition mb-8 font-semibold"
           >
             <ArrowLeft size={20} />
             <span>Back to Home</span>
