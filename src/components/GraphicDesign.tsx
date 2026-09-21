@@ -4,12 +4,12 @@ import Gallery, { type GalleryProject } from "./Gallery";
 const projects: GalleryProject[] = [
   {
     id: 2,
-    title: "Zine Deck",
+    title: "Consume Zine",
     category: "Digital Illustration",
     description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
+      "For one of my major classes in college, we were tasked to create a zine featuring the works we did during the semester. I had two LED lights and a dream.",
     fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
+      "I am incredibly proud of how this zine turned out. Thank you to my beloved friends, Shane and Line, for helping my vision come to life.",
     images: [
       "/projects/presentations/presentation1/p1.png",
       "/projects/presentations/presentation1/p2.png",
@@ -20,18 +20,17 @@ const projects: GalleryProject[] = [
     pdfUrl: "/projects/presentations/presentation1/zine.pdf",
     tags: ["Presentation", "Zine", "Editorial Design"],
     year: "2024",
-    tools: ["Canva"],
+    tools: ["Adobe Illustrator", "Adobe Photoshop", "Clip Studio Paint"],
     link: "#",
     github: "#",
   },
   {
     id: 3,
-    title: "Mock ads",
+    title: "Spectrovert Mockups",
     category: "Digital Illustration",
-    description:
-      "A collection of digital paintings exploring themes of nature and abstraction.",
+    description: "",
     fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+      "This was a mock company that I created for one of my marketing classes. You can actually see the pitch I made for this company, Spectrovert, in the Presentations section. This is essentially what the print campaign would look like if that company existed in real life. I loved how clean it turned out.",
     images: [
       "/projects/graphicd/p7.jpg",
       "/projects/graphicd/p8.jpg",
@@ -39,7 +38,7 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Illustration", "Digital Art", "Concept Art"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    tools: ["Adobe Illustrator", "Canva"],
     link: "#",
     github: "#",
   },
@@ -47,29 +46,27 @@ const projects: GalleryProject[] = [
     id: 4,
     title: "Kodah All Cars",
     category: "Digital Illustration",
-    description:
-      "A detailed vector automotive artwork showcasing stylized car lineup concepts.",
+    description: "",
     fullDescription:
-      "This piece explores precision line work, silhouette styling, and automotive design aesthetics. Created to capture clean vehicle contours with high-impact lighting and contrast.",
+      "A simple yet effective design for a car dealership in the Philippines.",
     images: ["/projects/graphicd/p10.jpg"],
     tags: ["Automotive", "Vector Art", "Digital Illustration"],
     year: "2023",
-    tools: ["Adobe Illustrator", "Photoshop"],
+    tools: ["Adobe Photoshop", "Canva"],
     link: "#",
     github: "#",
   },
   {
     id: 5,
-    title: "Birthday Poster",
+    title: "Birthday Invitations",
     category: "Digital Illustration",
-    description:
-      "A customized illustrative event poster design combining typography and portrait art.",
+    description: "",
     fullDescription:
-      "Designed as a decorative celebration piece focused on vibrant color harmonies, dynamic dynamic typography layouts, and expressive visual elements.",
+      "Every year for my birthday celebration, I like to create a personal invitation and send it to my friends. It adds a bit of whimsy to my life and I look forward to designing it once May rolls around.",
     images: ["/projects/graphicd/p11.jpg"],
     tags: ["Poster Design", "Typography", "Digital Painting"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop"],
+    tools: ["Canva"],
     link: "#",
     github: "#",
   },
@@ -80,7 +77,7 @@ export default function GraphicDesign() {
     <div className="space-y-28">
       {projects.map((project) => {
         const isSingleImage = project.images.length === 1;
-        const isBirthdayPoster = project.title === "Birthday Poster";
+        const isBirthdayPoster = project.title === "Birthday Invitations";
 
         if (isSingleImage) {
           return (
@@ -178,6 +175,9 @@ export default function GraphicDesign() {
                 <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
                   Project Overview
                 </h2>
+                <p className="text-lg text-about-ink leading-relaxed">
+                  {project.description}
+                </p>
                 <p className="text-lg text-about-ink leading-relaxed">
                   {project.fullDescription}
                 </p>

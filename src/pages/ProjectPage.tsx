@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import Navigation from "../components/Navigation";
 import FloatingElements from "../components/FloatingElements";
-import { ArrowLeft, Palette, Presentation, Briefcase, Layout } from "lucide-react";
+import {
+  ArrowLeft,
+  Palette,
+  Presentation,
+  Briefcase,
+  Layout,
+} from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 // import { motion } from "framer-motion";
 import DigitalIllustration from "../components/DigitalIllustration";
@@ -10,18 +16,30 @@ import Branding from "../components/Branding";
 import GraphicDesign from "../components/GraphicDesign";
 import CurtainTransition from "../components/CurtainTransition";
 
-type TabKey = "illustrations" | "presentations" | "branding" | "graphic-design";
+type TabKey = "branding" | "graphic-design" | "illustrations" | "presentations";
 
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-  { key: "illustrations", label: "Digital Illustration", icon: <Palette size={18} /> },
-  { key: "presentations", label: "Presentations", icon: <Presentation size={18} /> },
   { key: "branding", label: "Branding", icon: <Briefcase size={18} /> },
-  { key: "graphic-design", label: "Graphic Design", icon: <Layout size={18} /> },
+  {
+    key: "graphic-design",
+    label: "Graphic Design",
+    icon: <Layout size={18} />,
+  },
+  {
+    key: "illustrations",
+    label: "Digital Illustration",
+    icon: <Palette size={18} />,
+  },
+  {
+    key: "presentations",
+    label: "Presentations",
+    icon: <Presentation size={18} />,
+  },
 ];
 
 export default function ProjectPage() {
   // const [scrollY, setScrollY] = useState(0);
-  const [activeTab, setActiveTab] = useState<TabKey>("illustrations");
+  const [activeTab, setActiveTab] = useState<TabKey>("branding");
   const [pendingTab, setPendingTab] = useState<TabKey | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
@@ -56,23 +74,23 @@ export default function ProjectPage() {
   };
 
   const transitionLabel = pendingTab
-    ? TABS.find((t) => t.key === pendingTab)?.label ?? ""
-    : TABS.find((t) => t.key === activeTab)?.label ?? "";
+    ? (TABS.find((t) => t.key === pendingTab)?.label ?? "")
+    : (TABS.find((t) => t.key === activeTab)?.label ?? "");
 
   // const currentTabLabel = TABS.find((t) => t.key === activeTab)?.label ?? "";
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case "illustrations":
-        return <DigitalIllustration />;
-      case "presentations":
-        return <Presentations />;
       case "branding":
         return <Branding />;
       case "graphic-design":
         return <GraphicDesign />;
-      default:
+      case "illustrations":
         return <DigitalIllustration />;
+      case "presentations":
+        return <Presentations />;
+      default:
+        return <Branding />;
     }
   };
 
@@ -113,9 +131,7 @@ export default function ProjectPage() {
         </div>
 
         {/* Active Tab Content */}
-        <div className="relative min-h-[400px]">
-          {renderTabContent()}
-        </div>
+        <div className="relative min-h-[400px]">{renderTabContent()}</div>
 
         {/* Sticky Tab Navigation Bar */}
         <div className="sticky bottom-6 z-40 mt-12 flex justify-center pointer-events-none">

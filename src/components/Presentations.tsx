@@ -1,201 +1,180 @@
+import { useState, useRef } from "react";
+import { ArrowUpRight } from "lucide-react";
 import Gallery, { type GalleryProject } from "./Gallery";
 
-// Presentation project compilation data (PDF-based decks with folder page images)
-const projects: GalleryProject[] = [
- 
+interface PresentationItem {
+  id: number;
+  title: string;
+  image: string;
+  pdfUrl: string;
+}
+
+const projects: PresentationItem[] = [
+  {
+    id: 1,
+    title: "Spectrovert: The Pitch",
+    image: "/projects/presentations/presentation4/p1.jpg",
+    pdfUrl: "/projects/presentations/presentation4/midtermpitch.pdf",
+  },
   {
     id: 2,
-    title: "Merlin Deck",
-    category: "Presentation",
-    description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
-    fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
-    images: [
-      "/projects/presentations/presentation2/p1.png",
-      "/projects/presentations/presentation2/p2.png",
-      "/projects/presentations/presentation2/p3.png",
-      "/projects/presentations/presentation2/p4.png",
-      "/projects/presentations/presentation2/p5.png",
-    ],
+    title: "How NFT's Corrupt The World",
+    image: "/projects/presentations/presentation2/p1.png",
     pdfUrl: "/projects/presentations/presentation2/merlin.pdf",
-    tags: ["Presentation", "Infographic", "Editorial Design"],
-    year: "2024",
-    tools: ["Canva"],
-    link: "#",
-    github: "#",
   },
   {
     id: 3,
-    title: "Infographic",
-    category: "Presentation",
-    description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
-    fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
-    images: [
-      "/projects/presentations/presentation3/p1.png",
-      "/projects/presentations/presentation3/p2.png",
-      "/projects/presentations/presentation3/p3.png",
-      "/projects/presentations/presentation3/p4.png",
-      "/projects/presentations/presentation3/p5.png",
-    ],
-    pdfUrl: "/projects/presentations/presentation3/infographic.pdf",
-    tags: ["Presentation", "Infographic", "Editorial Design"],
-    year: "2024",
-    tools: ["Canva"],
-    link: "#",
-    github: "#",
+    title: "Nueva Ecija: Brandbook",
+    image: "/projects/presentations/presentation5/p1.jpg",
+    pdfUrl: "/projects/presentations/presentation5/brandbook.pdf",
   },
   {
     id: 4,
-    title: "Midterm Pitch",
-    category: "Presentation",
-    description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
-    fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
-    images: [
-      "/projects/presentations/presentation4/p1.jpg",
-      "/projects/presentations/presentation4/p2.jpg",
-      "/projects/presentations/presentation4/p3.jpg",
-      "/projects/presentations/presentation4/p4.jpg",
-      "/projects/presentations/presentation4/p5.jpg",
-    ],
-    pdfUrl: "/projects/presentations/presentation4/midtermpitch.pdf",
-    tags: ["Presentation", "Midterm Pitch", "Editorial Design"],
-    year: "2024",
-    tools: ["Canva"],
-    link: "#",
-    github: "#",
-  },
-  {
-    id: 5,
-    title: "Brand Book",
-    category: "Presentation",
-    description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
-    fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
-    images: [
-      "/projects/presentations/presentation5/p1.jpg",
-      "/projects/presentations/presentation5/p2.jpg",
-      "/projects/presentations/presentation5/p3.jpg",
-      "/projects/presentations/presentation5/p4.jpg",
-      "/projects/presentations/presentation5/p5.jpg",
-    ],
-    pdfUrl: "/projects/presentations/presentation5/brandbook.pdf",
-    tags: ["Presentation", "Brand Book", "Editorial Design"],
-    year: "2024",
-    tools: ["Canva"],
-    link: "#",
-    github: "#",
-  },
-  {
-    id: 6,
-    title: "Semiotics",
-    category: "Presentation",
-    description:
-      "A zine-style presentation exploring creative layouts and editorial design approaches.",
-    fullDescription:
-      "A zine-style presentation that experiments with editorial layouts, mixed media, and DIY aesthetics. It explores how unconventional page structures can create a distinctive rhythm and personality for visual storytelling.",
-    images: [
-      "/projects/presentations/presentation6/p1.jpg",
-      "/projects/presentations/presentation6/p2.jpg",
-      "/projects/presentations/presentation6/p3.jpg",
-      "/projects/presentations/presentation6/p4.jpg",
-      "/projects/presentations/presentation6/p5.jpg",
-    ],
+    title: "Life + Death",
+    image: "/projects/presentations/presentation6/p1.jpg",
     pdfUrl: "/projects/presentations/presentation6/semiotics.pdf",
-    tags: ["Presentation", "Semiotics", "Editorial Design"],
-    year: "2024",
-    tools: ["Canva"],
-    link: "#",
-    github: "#",
   },
 ];
 
 export default function Presentations() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const [activeGalleryProject, setActiveGalleryProject] =
+    useState<GalleryProject | null>(null);
+
+  // Reference container to programmatically invoke the Gallery view
+  const galleryContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleOpenPdfGallery = (project: PresentationItem) => {
+    // 1. Map presentation item into Gallery-compliant object structure
+    const galleryItem: GalleryProject = {
+      id: project.id,
+      title: project.title,
+      category: "Presentation",
+      description: "",
+      fullDescription: "",
+      images: [project.image],
+      pdfUrl: project.pdfUrl,
+      tags: ["Presentation"],
+      year: "2024",
+      tools: [],
+      link: "",
+      github: "",
+    };
+
+    setActiveGalleryProject(galleryItem);
+
+    // 2. Trigger Gallery open viewer action via simulated button click
+    setTimeout(() => {
+      if (galleryContainerRef.current) {
+        const actionBtn = galleryContainerRef.current.querySelector(
+          "button"
+        ) as HTMLButtonElement | null;
+        if (actionBtn) {
+          actionBtn.click();
+        }
+      }
+    }, 50);
+  };
+
   return (
-    <div className="space-y-20">
-      {projects.map((project) => (
-        <section key={project.id} className="max-w-6xl mx-auto px-6">
-          <div className="mb-12">
-            {/* Title */}
-            <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
-              {project.title}
-            </h1>
-            {/* Short Description */}
-            {/* <p className="text-xl text-about-ink max-w-4xl">
-              {project.description}
-            </p> */}
-          </div>
+    <div className="max-w-6xl mx-auto px-6 py-10 space-y-10">
+      {/* Header Section */}
+      <div>
+        <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
+          PROJECTS
+        </h1>
+        <p className="text-xl text-about-ink max-w-4xl mb-4">
+          Below are a series of presentation decks I made, showing a diversity of topics—from a simple brand book to a deep dive on semiotics.
+        </p>
+        <p className="text-xl text-about-ink max-w-4xl">
+          I am a sucker for presentations with good visuals and I like to think it translates to my own works.
+        </p>
+      </div>
 
-          {/* Gallery Showcase - 3D carousel of presentation page images */}
-          <div className="mb-16">
-            <Gallery currentProject={project} />
-          </div>
+      {/* Focus Slice Accordion Carousel */}
+      <div
+        className="flex flex-col md:flex-row gap-3 h-[480px] sm:h-[540px] md:h-[560px] w-full overflow-hidden rounded-2xl"
+        onMouseLeave={() => setActiveIndex(null)}
+      >
+        {projects.map((project, index) => {
+          const isActive = activeIndex === index;
 
-          {/* Details Grid */}
-          <div className="grid lg:grid-cols-3 gap-10 mb-16">
-            {/* Full Description & Context */}
-            <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
-                Project Overview
-              </h2>
-              <p className="text-lg text-about-ink leading-relaxed">
-                {project.fullDescription}
-              </p>
-            </div>
+          return (
+            <div
+              key={project.id}
+              onMouseEnter={() => setActiveIndex(index)}
+              className={`relative overflow-hidden rounded-xl transition-[flex-grow] duration-500 ease-in-out cursor-pointer group ${
+                isActive ? "flex-[6] md:flex-[8]" : "flex-[1]"
+              }`}
+            >
+              {/* Blurred Background Image */}
+              {isActive && (
+                <img
+                  src={project.image}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 h-full w-full object-cover scale-110 blur-xl opacity-60 pointer-events-none"
+                />
+              )}
 
-            {/* Metadata & CTAs */}
-            <div className="space-y-8">
-              {/* Metadata Card */}
-              <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
-                <h3 className="text-2xl font-bold text-sred mb-4">
-                  Details
-                </h3>
-                <div className="space-y-3 text-sm">
-                  {/* <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold text-about-ink/80">Category:</span>{" "}
-                    <span className="text-sred font-medium">{project.category}</span>
-                  </p> */}
-                  <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold text-about-ink/80">Year:</span> 
-                    <span className="text-sred font-medium">{project.year}</span>
-                  </p>
-                  <div className="pt-2 border-t border-secondary/20">
-                    <h4 className="text-about-ink/80 font-semibold mb-2">
-                      Tools Used:
-                    </h4>
-                    <ul className="text-about-ink/80 list-disc list-inside ml-2 space-y-1">
-                      {project.tools.map((tool) => (
-                        <li key={tool}>{tool}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              {/* Main Display Image */}
+              <img
+                src={project.image}
+                alt={project.title}
+                className={`relative z-10 inset-0 h-full w-full transition-all duration-500 ease-out ${
+                  isActive
+                    ? "object-contain drop-shadow-2xl"
+                    : "absolute object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105"
+                }`}
+              />
 
-              {/* Tags Section */}
-              {/* <div className="space-y-3">
-                <h3 className="text-xl font-bold text-sred">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
+              {/* Gradient Overlay */}
+              <div
+                className={`absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-300 pointer-events-none ${
+                  isActive ? "opacity-100" : "opacity-0"
+                }`}
+              />
+
+              {/* Hover Details & Arrow Actions */}
+              {isActive && (
+                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between gap-4 text-white z-30 animate-in fade-in duration-300">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide text-white drop-shadow-md">
+                      {project.title}
+                    </h3>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenPdfGallery(project)}
+                      className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold tracking-wide text-[#fff4e7] hover:text-sred transition-colors duration-200 text-left"
                     >
-                      {tag}
-                    </span>
-                  ))}
+                      <span>View full presentation</span>
+                      <ArrowUpRight size={18} />
+                    </button>
+                  </div>
+
+                  {/* Arrow Action Button -> Triggers Gallery Viewer */}
+                  <button
+                    type="button"
+                    onClick={() => handleOpenPdfGallery(project)}
+                    aria-label={`Open ${project.title} presentation`}
+                    className="p-3.5 sm:p-4 rounded-full bg-white/20 hover:bg-sred text-white backdrop-blur-md transition-all duration-300 transform hover:scale-110 shrink-0"
+                  >
+                    <ArrowUpRight size={22} />
+                  </button>
                 </div>
-              </div> */}
+              )}
             </div>
-          </div>
-        </section>
-      ))}
+          );
+        })}
+      </div>
+
+      {/* Hidden Gallery Instance to drive PDF page-by-page rendering & portal modal */}
+      <div ref={galleryContainerRef} className="hidden">
+        {activeGalleryProject && (
+          <Gallery currentProject={activeGalleryProject} />
+        )}
+      </div>
     </div>
   );
 }
-

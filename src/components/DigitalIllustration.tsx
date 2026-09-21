@@ -5,12 +5,12 @@ import Gallery, { type GalleryProject } from "./Gallery";
 const projects: GalleryProject[] = [
   {
     id: 1,
-    title: "Digital Canvas Series",
+    title: "Food Design",
     category: "Digital Illustration",
     description:
       "A rich visual collection of traditional Filipino culinary artworks rendered in vibrant digital mediums.",
     fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral culinary concepts and textures into vivid digital forms.",
+      "This was done for an assignment to highlight some of the dishes in different parts of the Philippines. I’ve never done food-specific illustrations before but it was a pleasant challenge. Is it bad to say that it turned out better than I thought?",
     images: [
       "/projects/illustrations/bami.png",
       "/projects/illustrations/beef rendang.png",
@@ -30,18 +30,18 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Food Illustration", "Digital Painting", "Culture & Art"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    tools: ["Clip Studio Paint"],
     link: "#",
     github: "#",
   },
   {
     id: 2,
-    title: "Characters Design Showcase",
+    title: "Character Design",
     category: "Animation & Concept Art",
     description:
       "Character concept studies, dynamic posters, and stylized figurative illustrations.",
     fullDescription:
-      "A comprehensive character illustration series featuring dynamic figures, anime-inspired aesthetic studies, and dramatic key visual art. This work explores lighting contrast, bold silhouette design, and expressive character storytelling.",
+      "This is what I enjoy doing the most, I love creating characters or fan art of characters. Some of these I designed for a class, mainly video game development. And others are personal works.",
     images: [
       "/projects/illustrations/ALUCARD SHATTERED.jpg",
       "/projects/illustrations/CHARACTER STUDY.png",
@@ -51,7 +51,7 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Character Design", "Concept Art", "Digital Painting"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "After Effects"],
+    tools: ["Clip Studio Paint"],
     link: "#",
     github: "#",
   },

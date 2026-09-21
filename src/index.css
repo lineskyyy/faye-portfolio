@@ -335,3 +335,58 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+.card {
+  position: relative;
+  width: 300px; /* Adjust base width as needed */
+  aspect-ratio: 16 / 9; /* Matches thumbnail aspect ratio in collapsed state */
+  overflow: hidden;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #000;
+}
+
+/* Thumbnail Image */
+.card-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fits thumbnail neatly while non-hovered */
+  transition: object-fit 0.3s ease;
+  display: block;
+}
+
+/* Text Content Overlay (Hidden by default) */
+.card-content {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.2));
+  color: #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  
+  /* Hide content when not hovered */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* --- HOVER STATES --- */
+
+/* 1. Expand Card to show full uncropped image */
+.card:hover {
+  aspect-ratio: auto; /* Unsets fixed ratio to fit full image height */
+  height: auto;
+}
+
+/* 2. Switch image fit to show the entire original image */
+.card:hover .card-thumbnail {
+  object-fit: contain; 
+}
+
+/* 3. Reveal Title and Contents */
+.card:hover .card-content {
+  opacity: 1;
+  visibility: visible;
+}

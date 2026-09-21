@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown, Palette, Presentation, Briefcase, Layout } from "lucide-react";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  Palette,
+  Presentation,
+  Briefcase,
+  Layout,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const TRANSITION_CLASSES =
   "transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-out";
 
 const WORK_CATEGORIES = [
-  { key: "illustrations", label: "Digital Illustration", icon: Palette },
-  { key: "presentations", label: "Presentations", icon: Presentation },
   { key: "branding", label: "Branding", icon: Briefcase },
   { key: "graphic-design", label: "Graphic Design", icon: Layout },
+  { key: "illustrations", label: "Digital Illustration", icon: Palette },
+  { key: "presentations", label: "Presentations", icon: Presentation },
 ];
 
 export default function Navigation() {
@@ -29,7 +37,8 @@ export default function Navigation() {
       const hero = document.getElementById("hero");
       setIsHeroPage(Boolean(hero));
 
-      const heroBottom = hero?.getBoundingClientRect().bottom ?? window.innerHeight;
+      const heroBottom =
+        hero?.getBoundingClientRect().bottom ?? window.innerHeight;
       setIsPastHero(Boolean(hero) && heroBottom <= 80);
     };
 
@@ -107,6 +116,10 @@ export default function Navigation() {
         <div
           className={`pointer-events-auto hidden items-center gap-1 rounded-xl border p-1.5 md:flex ${surfaceClasses} ${TRANSITION_CLASSES}`}
         >
+          <Link to="/" className={linkClassName}>
+            Home
+          </Link>
+
           <Link to="/about" className={linkClassName}>
             About
           </Link>
@@ -152,10 +165,6 @@ export default function Navigation() {
             )}
           </div>
 
-          <a href="#contact" className={linkClassName}>
-            Contact
-          </a>
-
           <Link to="/contact" className={ctaClassName}>
             Get in touch
           </Link>
@@ -169,13 +178,25 @@ export default function Navigation() {
           onClick={() => setIsOpen((open) => !open)}
           className={`pointer-events-auto rounded-xl border p-2.5 hover:-translate-y-0.5 hover:shadow-md md:hidden ${surfaceClasses} ${TRANSITION_CLASSES}`}
         >
-          {isOpen ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}
+          {isOpen ? (
+            <X size={20} strokeWidth={2} />
+          ) : (
+            <Menu size={20} strokeWidth={2} />
+          )}
         </button>
 
         {/* Mobile Dropdown Menu */}
         {isOpen && (
           <div className="pointer-events-auto absolute right-4 top-full mt-2 w-[calc(100vw-2rem)] max-w-xs rounded-2xl border border-[#1e5247]/15 bg-[#fff4e7]/95 backdrop-blur-xl p-3 text-[#1e5247] shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200 md:hidden">
             <div className="flex flex-col gap-1.5">
+              <Link
+                to="/"
+                className="inline-flex w-full items-center rounded-lg px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#1e5247] hover:bg-[#1e5247]/10 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
+
               <Link
                 to="/about"
                 className="inline-flex w-full items-center rounded-lg px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#1e5247] hover:bg-[#1e5247]/10 transition-colors"
@@ -192,7 +213,9 @@ export default function Navigation() {
                   onClick={() => setIsOpen(false)}
                 >
                   <span>Work</span>
-                  <span className="text-[10px] font-normal lowercase text-[#1e5247]/60">view all</span>
+                  <span className="text-[10px] font-normal lowercase text-[#1e5247]/60">
+                    view all
+                  </span>
                 </Link>
                 <div className="mt-1 flex flex-col gap-1 pl-2 border-l-2 border-[#1e5247]/20">
                   {WORK_CATEGORIES.map((cat) => {
@@ -211,14 +234,6 @@ export default function Navigation() {
                   })}
                 </div>
               </div>
-
-              <a
-                href="#contact"
-                className="inline-flex w-full items-center rounded-lg px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#1e5247] hover:bg-[#1e5247]/10 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                Contact
-              </a>
 
               <hr className="my-1 border-[#1e5247]/10" />
               <Link

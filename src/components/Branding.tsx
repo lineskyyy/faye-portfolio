@@ -9,7 +9,7 @@ const projects: GalleryProject[] = [
     description:
       "A collection of digital paintings exploring themes of nature and abstraction.",
     fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+      "During my mentorship in Cumbria Ridge, I was tasked to handle Buyani’s social media page. Buyani is a digital service platform for a bunch of communities in Cavite and I utilized my skills in marketing to find a cohesive look for Buyani’s branding.",
     images: [
       "/projects/branding/p1.jpg",
       "/projects/branding/p2.jpg",
@@ -22,7 +22,7 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Illustration", "Digital Art", "Concept Art"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    tools: ["Adobe Photoshop", "Canva"],
     link: "#",
     github: "#",
   },
@@ -33,7 +33,7 @@ const projects: GalleryProject[] = [
     description:
       "A collection of digital paintings exploring themes of nature and abstraction.",
     fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+      "This was a fun prompt! It was Valentines and we were assigned to create social media postings for Lucky Me’s new Labuyo line. I busted out my illustration skills for this and drew the singers behind the famous songs used to make Labuyo flavored puns.",
     images: [
       "/projects/branding/p9.jpg",
       "/projects/branding/p10.jpg",
@@ -41,7 +41,7 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Illustration", "Digital Art", "Concept Art"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    tools: ["Adobe Photoshop", "Clip Studio Paint"],
     link: "#",
     github: "#",
   },
@@ -52,7 +52,7 @@ const projects: GalleryProject[] = [
     description:
       "A collection of digital paintings exploring themes of nature and abstraction.",
     fullDescription:
-      "This series represents my exploration of digital painting techniques, combining traditional art principles with modern digital tools. Each piece tells a unique story through color, composition, and emotional depth. The core challenge was translating ephemeral concepts into vivid digital forms.",
+      " Now this was something new to me, because I’ve never had the target market set to older audiences before. There had to be certain adjustments, both in copy and design, to get the audience’s attention. It was a great learning experience for me overall.",
     images: [
       "/projects/branding/p12.jpg",
       "/projects/branding/p13.jpg",
@@ -60,7 +60,7 @@ const projects: GalleryProject[] = [
     ],
     tags: ["Illustration", "Digital Art", "Concept Art"],
     year: "2023",
-    tools: ["Procreate", "Adobe Photoshop", "Clip Studio Paint"],
+    tools: ["Adobe Photoshop"],
     link: "#",
     github: "#",
   },
@@ -103,17 +103,19 @@ export default function Branding() {
             <div className="space-y-8">
               {/* Metadata Card */}
               <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
-                <h3 className="text-2xl font-bold text-sred mb-4">
-                  Details
-                </h3>
+                <h3 className="text-2xl font-bold text-sred mb-4">Details</h3>
                 <div className="space-y-3 text-sm">
                   {/* <p className="flex items-center gap-3 text-foreground">
                     <span className="font-semibold text-about-ink/80">Category:</span>{" "}
                     <span className="text-sred font-medium">{project.category}</span>
                   </p> */}
                   <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold text-about-ink/80">Year:</span>{" "}
-                    <span className="text-sred font-medium">{project.year}</span>
+                    <span className="font-semibold text-about-ink/80">
+                      Year:
+                    </span>{" "}
+                    <span className="text-sred font-medium">
+                      {project.year}
+                    </span>
                   </p>
                   <div className="pt-2 border-t border-secondary/20">
                     <h4 className="text-about-ink/80 font-semibold mb-2">
