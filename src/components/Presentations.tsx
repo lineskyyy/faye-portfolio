@@ -115,12 +115,12 @@ export default function Presentations() {
             </div>
 
             {/* Bottom Info Bar */}
-            <div className="p-5 flex items-center justify-between gap-4 bg-[#181818] border-t border-white/5">
+            <div className="p-5 flex items-center justify-between gap-4 bg-sred border-t border-white/5">
               <div>
-                <h3 className="text-lg sm:text-xl font-bold tracking-wide text-white group-hover:text-sred transition-colors duration-200">
+                <h3 className="text-lg sm:text-xl font-bold tracking-wide text-beige group-hover:text-about-ink transition-colors duration-200">
                   {project.title}
                 </h3>
-                <p className="text-xs text-about-ink/70 mt-0.5">
+                <p className="text-xs text-beige/70 mt-0.5">
                   Presentation Deck
                 </p>
               </div>

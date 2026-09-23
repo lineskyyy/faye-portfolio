@@ -25,20 +25,21 @@ const baseImages = [
 
 const walls = ["left", "right", "top", "bottom"] as const;
 const wallCrossOffsets = [30, 50, 70] as const;
+const TOTAL_ITEMS = baseImages.length;
+const TUNNEL_DEPTH = 3000;
 
 function TunnelArtwork() {
   const [isPaused, setIsPaused] = useState(false);
-  const [zOffset, setZOffset] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
   const animFrameRef = useRef<number | null>(null);
   const zOffsetRef = useRef(0);
+  const isPausedRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const ringRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
-
-  const TOTAL_ITEMS = baseImages.length;
-  const TUNNEL_DEPTH = 3000;
 
   useEffect(() => {
     const checkMobile = () => {
@@ -81,7 +82,7 @@ function TunnelArtwork() {
         height,
       };
     });
-  }, [TOTAL_ITEMS, TUNNEL_DEPTH, isMobile]);
+  }, []);
 
   const gridRings = useMemo(() => {
     const ringSpacing = 160;
@@ -102,6 +103,10 @@ function TunnelArtwork() {
   }, []);
 
   useEffect(() => {
+    isPausedRef.current = isPaused;
+  }, [isPaused]);
+
+  useEffect(() => {
     let lastTime = performance.now();
 
     const animate = (now: number) => {
@@ -112,10 +117,26 @@ function TunnelArtwork() {
       mouse.x += (mouse.targetX - mouse.x) * 0.05;
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
-      if (!isPaused) {
+      if (!isPausedRef.current) {
         zOffsetRef.current += delta * 0.12;
-        setZOffset(zOffsetRef.current);
       }
+
+      const currentZOffset = zOffsetRef.current;
+      items.forEach((item, index) => {
+        const element = itemRefs.current[index];
+        if (!element) return;
+        const style = getItemStyle(item, currentZOffset);
+        element.style.transform = String(style.transform);
+        element.style.opacity = String(style.opacity);
+      });
+
+      gridRings.forEach((ringZ, index) => {
+        const element = ringRefs.current[index];
+        if (!element) return;
+        const style = getRingStyle(ringZ, currentZOffset);
+        element.style.transform = String(style.transform);
+        element.style.opacity = String(style.opacity);
+      });
 
       if (containerRef.current) {
         const rotateX = -mouse.y * 5;
@@ -131,7 +152,7 @@ function TunnelArtwork() {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [isPaused]);
+  }, [gridRings, items]);
 
   const getItemStyle = (
     item: (typeof items)[number],
@@ -286,16 +307,30 @@ function TunnelArtwork() {
 
           {/* Wireframe depth ring boundaries */}
           {gridRings.map((ringZ, index) => (
-            <div key={`ring-${index}`} style={getRingStyle(ringZ, zOffset)} />
+            <div
+              key={`ring-${index}`}
+              ref={(element) => {
+                ringRefs.current[index] = element;
+              }}
+              style={getRingStyle(ringZ, 0)}
+            />
           ))}
 
           {/* Scattered Wall Images */}
-          {items.map((item) => (
-            <div key={item.id} style={getItemStyle(item, zOffset)}>
+          {items.map((item, index) => (
+            <div
+              key={item.id}
+              ref={(element) => {
+                itemRefs.current[index] = element;
+              }}
+              style={getItemStyle(item, 0)}
+            >
               <img
                 src={item.src}
                 alt=""
                 aria-hidden="true"
+                loading={index < 4 ? "eager" : "lazy"}
+                decoding="async"
                 className="h-full w-full object-cover border border-white/40 shadow-[0_0_25px_rgba(0,0,0,0.6)] rounded-sm"
               />
             </div>
@@ -439,5 +474,3 @@ export default function HeroSix() {
     </section>
   );
 }
-
-export { HeroSix, TunnelArtwork };
