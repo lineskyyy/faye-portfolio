@@ -25,7 +25,7 @@ export default function Contact() {
             isVisible ? "fade-up fade-up-delay-1" : "opacity-0"
           }`}
         >
-          I'm always interested in hearing about new projects and opportunities. Feel free to reach out!
+          Help this hungry artist be hungry no more. Feel free to reach out for new projects and collaborations (yay!). 
         </p>
 
         {/* Primary CTA Button - Using btn-hover for the lift and shadow effect */}
