@@ -87,6 +87,7 @@ export default function Gallery({
 
   const images = currentProject?.images || [];
   const hasPdf = Boolean(currentProject?.pdfUrl);
+  const isZinePdf = currentProject?.pdfUrl?.endsWith("zine.pdf");
 
   const goTo = useCallback(
     (dir: number) => {
@@ -127,6 +128,11 @@ export default function Gallery({
   };
 
   const openViewer = useCallback(() => {
+    // If it's zine.pdf, open directly in a new tab instead of using the viewer
+    if (isZinePdf && currentProject?.pdfUrl) {
+      window.open(currentProject.pdfUrl, "_blank", "noopener,noreferrer");
+      return;
+    }
     setSelectedIndex(0);
     setIsOpen(true);
 
@@ -158,7 +164,7 @@ export default function Gallery({
           }
         });
     }
-  }, [hasPdf, currentProject?.pdfUrl]);
+  }, [hasPdf, isZinePdf, currentProject?.pdfUrl]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -196,18 +202,31 @@ export default function Gallery({
       {/* Action Button: PDF / Expand View */}
       {(hasPdf || images.length > 1) && (
         <div className="flex justify-end mb-4">
-          <button
-            onClick={openViewer}
-            aria-label={
-              hasPdf
-                ? "View full PDF presentation"
-                : "Open gallery in fullscreen"
-            }
-            className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-tred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-105 text-xs sm:text-sm font-medium backdrop-blur-sm"
-          >
-            {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
-            {hasPdf ? "View PDF" : "Expand View"}
-          </button>
+          {isZinePdf && currentProject?.pdfUrl ? (
+            <a
+              href={currentProject.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View zine PDF in a new tab"
+              className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-tred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-105 text-xs sm:text-sm font-medium backdrop-blur-sm"
+            >
+              <FileText size={16} />
+              View PDF
+            </a>
+          ) : (
+            <button
+              onClick={openViewer}
+              aria-label={
+                hasPdf
+                  ? "View full PDF presentation"
+                  : "Open gallery in fullscreen"
+              }
+              className="flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-about-ink/10 border border-about-ink/30 text-about-ink hover:bg-tred/20 hover:text-tred hover:border-tred transition-all duration-300 hover:scale-105 text-xs sm:text-sm font-medium backdrop-blur-sm"
+            >
+              {hasPdf ? <FileText size={16} /> : <Maximize2 size={16} />}
+              {hasPdf ? "View PDF" : "Expand View"}
+            </button>
+          )}
         </div>
       )}
 
