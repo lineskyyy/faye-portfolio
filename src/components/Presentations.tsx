@@ -37,7 +37,6 @@ const projects: PresentationItem[] = [
 ];
 
 export default function Presentations() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
   const [activeGalleryProject, setActiveGalleryProject] =
     useState<GalleryProject | null>(null);
 
@@ -45,7 +44,7 @@ export default function Presentations() {
   const galleryContainerRef = useRef<HTMLDivElement>(null);
 
   const handleOpenPdfGallery = (project: PresentationItem) => {
-    // 1. Map presentation item into Gallery-compliant object structure
+    // Map presentation item into Gallery-compliant object structure
     const galleryItem: GalleryProject = {
       id: project.id,
       title: project.title,
@@ -63,7 +62,7 @@ export default function Presentations() {
 
     setActiveGalleryProject(galleryItem);
 
-    // 2. Trigger Gallery open viewer action via simulated button click
+    // Trigger Gallery open viewer action
     setTimeout(() => {
       if (galleryContainerRef.current) {
         const actionBtn = galleryContainerRef.current.querySelector(
@@ -91,82 +90,47 @@ export default function Presentations() {
         </p>
       </div>
 
-      {/* Focus Slice Accordion Carousel */}
-      <div
-        className="flex flex-col md:flex-row gap-3 h-[480px] sm:h-[540px] md:h-[560px] w-full overflow-hidden rounded-2xl"
-        onMouseLeave={() => setActiveIndex(null)}
-      >
-        {projects.map((project, index) => {
-          const isActive = activeIndex === index;
-
-          return (
-            <div
-              key={project.id}
-              onMouseEnter={() => setActiveIndex(index)}
-              className={`relative overflow-hidden rounded-xl transition-[flex-grow] duration-500 ease-in-out cursor-pointer group ${
-                isActive ? "flex-[6] md:flex-[8]" : "flex-[1]"
-              }`}
-            >
-              {/* Blurred Background Image */}
-              {isActive && (
-                <img
-                  src={project.image}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute inset-0 h-full w-full object-cover scale-110 blur-xl opacity-60 pointer-events-none"
-                />
-              )}
-
-              {/* Main Display Image */}
+      {/* 2x2 Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            onClick={() => handleOpenPdfGallery(project)}
+            className="group relative flex flex-col overflow-hidden rounded-2xl bg-[#141414] cursor-pointer border border-white/10 shadow-md hover:shadow-2xl hover:border-pred/40 transition-all duration-300"
+          >
+            {/* 16:9 Presentation Frame */}
+            <div className="relative w-full aspect-video overflow-hidden bg-black/60">
               <img
                 src={project.image}
                 alt={project.title}
-                className={`relative z-10 inset-0 h-full w-full transition-all duration-500 ease-out ${
-                  isActive
-                    ? "object-contain drop-shadow-2xl"
-                    : "absolute object-cover opacity-85 group-hover:opacity-100 group-hover:scale-105"
-                }`}
+                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
-
-              {/* Gradient Overlay */}
-              <div
-                className={`absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/30 to-transparent transition-opacity duration-300 pointer-events-none ${
-                  isActive ? "opacity-100" : "opacity-0"
-                }`}
-              />
-
-              {/* Hover Details & Arrow Actions */}
-              {isActive && (
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between gap-4 text-white z-30 animate-in fade-in duration-300">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide text-white drop-shadow-md">
-                      {project.title}
-                    </h3>
-
-                    <button
-                      type="button"
-                      onClick={() => handleOpenPdfGallery(project)}
-                      className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold tracking-wide text-[#fff4e7] hover:text-sred transition-colors duration-200 text-left"
-                    >
-                      <span>View full presentation</span>
-                      <ArrowUpRight size={18} />
-                    </button>
-                  </div>
-
-                  {/* Arrow Action Button -> Triggers Gallery Viewer */}
-                  <button
-                    type="button"
-                    onClick={() => handleOpenPdfGallery(project)}
-                    aria-label={`Open ${project.title} presentation`}
-                    className="p-3.5 sm:p-4 rounded-full bg-white/20 hover:bg-sred text-white backdrop-blur-md transition-all duration-300 transform hover:scale-110 shrink-0"
-                  >
-                    <ArrowUpRight size={22} />
-                  </button>
-                </div>
-              )}
+              
+              {/* Subtle hover overlay badge */}
+              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span className="text-xs font-semibold text-white bg-black/70 px-4 py-2 rounded-full border border-white/20 backdrop-blur-md">
+                  Click to view full deck
+                </span>
+              </div>
             </div>
-          );
-        })}
+
+            {/* Bottom Info Bar */}
+            <div className="p-5 flex items-center justify-between gap-4 bg-[#181818] border-t border-white/5">
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold tracking-wide text-white group-hover:text-sred transition-colors duration-200">
+                  {project.title}
+                </h3>
+                <p className="text-xs text-about-ink/70 mt-0.5">
+                  Presentation Deck
+                </p>
+              </div>
+
+              <div className="p-2.5 rounded-full bg-white/5 group-hover:bg-sred text-white transition-all duration-300 transform group-hover:scale-110 shrink-0 border border-white/10">
+                <ArrowUpRight size={18} />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Hidden Gallery Instance to drive PDF page-by-page rendering & portal modal */}

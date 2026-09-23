@@ -73,28 +73,24 @@ export default function Branding() {
         <section key={project.id} className="max-w-6xl mx-auto px-6">
           <div className="mb-12">
             {/* Title */}
-            <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
+            <h1 className="text-3xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold sm:mb-2 md:mb-4 leading-tight">
               {project.title}
             </h1>
-            {/* Short Description */}
-            {/* <p className="text-xl text-about-ink max-w-4xl">
-              {project.description}
-            </p> */}
           </div>
 
-          {/* Gallery Showcase - 3D carousel of project images */}
-          <div className="mb-16">
-            <Gallery currentProject={project} />
+          {/* Gallery Showcase - 3D carousel with fitted images */}
+          <div className="mb-8 sm:mb-12 md:mb-16">
+            <Gallery currentProject={project} fitImage />
           </div>
 
           {/* Details Grid */}
           <div className="grid lg:grid-cols-3 gap-10 mb-16">
             {/* Full Description & Context */}
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-pred border-b border-secondary/20 pb-2">
                 Project Overview
               </h2>
-              <p className="text-lg text-about-ink leading-relaxed">
+              <p className="text-md xs:text-lg sm:text-xl md:text-2xl text-about-ink leading-relaxed">
                 {project.fullDescription}
               </p>
             </div>
@@ -103,13 +99,14 @@ export default function Branding() {
             <div className="space-y-8">
               {/* Metadata Card */}
               <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
-                <h3 className="text-2xl font-bold text-sred mb-4">Details</h3>
-                <div className="space-y-3 text-sm">
-                  {/* <p className="flex items-center gap-3 text-foreground">
-                    <span className="font-semibold text-about-ink/80">Category:</span>{" "}
-                    <span className="text-sred font-medium">{project.category}</span>
-                  </p> */}
-                  <p className="flex items-center gap-3 text-foreground">
+                <h3 className="text-2xl font-bold text-sred mb-2">Tools Used</h3>
+                <ul className="text-md text-about-ink/80 list-disc list-inside ml-2 space-y-1">
+                  {project.tools.map((tool) => (
+                    <li key={tool}>{tool}</li>
+                  ))}
+                </ul>
+                {/* <div className="space-y-3 text-sm">
+                  <p className="flex items-center gap-2 text-foreground">
                     <span className="font-semibold text-about-ink/80">
                       Year:
                     </span>{" "}
@@ -117,7 +114,7 @@ export default function Branding() {
                       {project.year}
                     </span>
                   </p>
-                  <div className="pt-2 border-t border-secondary/20">
+                  <div className=" border-t border-secondary/20">
                     <h4 className="text-about-ink/80 font-semibold mb-2">
                       Tools Used:
                     </h4>
@@ -127,23 +124,8 @@ export default function Branding() {
                       ))}
                     </ul>
                   </div>
-                </div>
+                </div> */}
               </div>
-
-              {/* Tags Section */}
-              {/* <div className="space-y-3">
-                <h3 className="text-xl font-bold text-sred">Tags</h3>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 bg-about-ink/20 text-about-ink rounded-full text-sm font-medium hover:bg-primary/50 hover:text-primary-foreground smooth-transition cursor-pointer"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div> */}
             </div>
           </div>
         </section>

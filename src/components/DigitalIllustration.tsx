@@ -36,7 +36,7 @@ const projects: GalleryProject[] = [
   },
   {
     id: 2,
-    title: "Character Design",
+    title: "Characterx Design",
     category: "Animation & Concept Art",
     description:
       "Character concept studies, dynamic posters, and stylized figurative illustrations.",
@@ -77,7 +77,7 @@ export default function DigitalIllustration() {
           <section key={project.id} className="max-w-6xl mx-auto px-6">
             {/* Header Block */}
             <div className="mb-12">
-              <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
+              <h1 className="text-3xl xs:text-3xl sm:text-5xl md:text-7xl text-pred font-extrabold mb-4 leading-tight">
                 {project.title}
               </h1>
             </div>
@@ -131,10 +131,10 @@ export default function DigitalIllustration() {
             <div className="grid lg:grid-cols-3 gap-10 mb-16">
               {/* Full Description & Context */}
               <div className="lg:col-span-2 space-y-6">
-                <h2 className="text-3xl font-bold text-pred border-b border-secondary/20 pb-2">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-pred border-b border-secondary/20 pb-2">
                   Project Overview
                 </h2>
-                <p className="text-lg text-about-ink leading-relaxed">
+                <p className="text-md xs:text-lg sm:text-xl md:text-2xl text-about-ink leading-relaxed">
                   {project.fullDescription}
                 </p>
               </div>
@@ -143,12 +143,19 @@ export default function DigitalIllustration() {
               <div className="space-y-8">
                 {/* Metadata Card */}
                 <div className="bg-about-ink/10 p-6 rounded-xl border border-about-ink/30">
-                  <h3 className="text-2xl font-bold text-sred mb-4">Details</h3>
-                  <div className="space-y-3 text-sm">
-                    {/* <p className="flex items-center gap-3 text-foreground">
+                  <h3 className="text-2xl font-bold text-sred mb-2">
+                    Tools Used
+                  </h3>
+                  <ul className="text-md text-about-ink/80 list-disc list-inside ml-2 space-y-1">
+                    {project.tools.map((tool) => (
+                      <li key={tool}>{tool}</li>
+                    ))}
+                  </ul>
+                  {/* <div className="space-y-3 text-sm">
+                    <p className="flex items-center gap-3 text-foreground">
                       <span className="font-semibold text-about-ink/80">Category:</span>{" "}
                       <span className="text-sred font-medium">{project.category}</span>
-                    </p> */}
+                    </p>
                     <p className="flex items-center gap-3 text-foreground">
                       <span className="font-semibold text-about-ink/80">
                         Year:
@@ -167,7 +174,7 @@ export default function DigitalIllustration() {
                         ))}
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* Tags Section */}

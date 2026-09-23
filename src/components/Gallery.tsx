@@ -301,16 +301,16 @@ export default function Gallery({
               return (
                 <div
                   key={i}
-                  className="absolute top-1/2 left-1/2 cursor-pointer"
+                  className="absolute top-1/2 left-1/2 cursor-pointer group"
                   style={{
                     transform: `
-                    translate(-50%, -50%)
-                    translateX(${offset * 220}px)
-                    translateZ(${isSelected ? "140px" : "0px"})
-                    rotateY(${offset * -25}deg)
-                    scale(${isSelected ? 1.08 : 0.88})
-                    translateY(${isSelected ? "0px" : "16px"})
-                  `,
+          translate(-50%, -50%)
+          translateX(${offset * 220}px)
+          translateZ(${isSelected ? "140px" : "0px"})
+          rotateY(${offset * -25}deg)
+          scale(${isSelected ? 1.08 : 0.88})
+          translateY(${isSelected ? "0px" : "16px"})
+        `,
                     zIndex: 20 - Math.abs(offset),
                     opacity: Math.abs(offset) > 2 ? 0 : 1,
                     transition:
@@ -318,41 +318,45 @@ export default function Gallery({
                   }}
                   onClick={() => setSelectedIndex(i)}
                 >
+                  {/* Main Image */}
                   <img
                     src={img || "/placeholder.svg"}
-                    alt={`${currentProject?.title ?? "Project"} preview ${
-                      i + 1
-                    }`}
+                    alt={`${currentProject?.title ?? "Project"} preview ${i + 1}`}
                     className={`
-                    mx-auto transition-all duration-300
-                    ${
-                      fitImage
-                        ? "sm:w-[480px] md:w-[600px] sm:h-[360px] md:h-[440px] object-contain border-0 shadow-none filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)]"
-                        : "rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] sm:w-[380px] md:w-[480px] sm:h-[300px] md:h-[380px] object-cover"
-                    }
-                  `}
+          mx-auto transition-all duration-300
+          ${
+            fitImage
+              ? "sm:w-[480px] md:w-[600px] sm:h-[360px] md:h-[440px] object-contain border-0 shadow-none filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)]"
+              : "rounded-xl border border-accent/20 shadow-[0_0_30px_rgba(254,73,123,0.35)] sm:w-[380px] md:w-[480px] sm:h-[300px] md:h-[380px] object-cover"
+          }
+        `}
                   />
+
+                  {/* Matched Reflection */}
                   <div
-                    className="absolute left-0 right-0"
-                    style={{ top: "calc(100% + 8px)" }}
+                    className="absolute left-0 right-0 top-full pointer-events-none overflow-hidden"
+                    style={{
+                      height: fitImage ? "140px" : "110px",
+                      marginTop: "4px",
+                      maskImage:
+                        "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                      WebkitMaskImage:
+                        "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                    }}
                   >
                     <img
                       src={img || "/placeholder.svg"}
                       alt=""
                       className={`
-                      mx-auto rounded-xl scale-y-[-1]
-                      ${
-                        fitImage
-                          ? "sm:w-[480px] md:w-[600px] sm:h-[130px] md:h-[160px] object-contain object-bottom bg-black/40"
-                          : "sm:w-[380px] md:w-[480px] sm:h-[110px] md:h-[130px] object-cover object-bottom"
-                      }
-                    `}
+            mx-auto scale-y-[-1]
+            ${
+              fitImage
+                ? "sm:w-[480px] md:w-[600px] sm:h-[360px] md:h-[440px] object-contain"
+                : "sm:w-[380px] md:w-[480px] sm:h-[300px] md:h-[380px] object-cover"
+            }
+          `}
                       style={{
-                        opacity: isSelected ? 0.4 : 0.3,
-                        maskImage:
-                          "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
-                        WebkitMaskImage:
-                          "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+                        opacity: isSelected ? 0.4 : 0.25,
                       }}
                     />
                   </div>
